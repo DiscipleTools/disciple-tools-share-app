@@ -25,7 +25,7 @@ curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.pha
 php wp-cli.phar --info
 chmod +x wp-cli.phar
 
-# Set up basic Wordpress installation:
+# Set up user Wordpress installation:
 ./wp-cli.phar core download
 ./wp-cli.phar config create --force --dbname=testdb --dbuser=travis
 ./wp-cli.phar core install --url=localhost --title=test --admin_user=admin --admin_email=example@example.com

@@ -1,30 +1,25 @@
-[![Build Status](https://travis-ci.com/DiscipleTools/disciple-tools-plugin-starter-template.svg?branch=master)](https://travis-ci.com/DiscipleTools/disciple-tools-plugin-starter-template)
+[![Build Status](https://travis-ci.com/DiscipleTools/disciple-tools-share-app.svg?branch=master)](https://travis-ci.com/DiscipleTools/disciple-tools-share-app)
 
-# Disciple Tools - Name
+# Disciple Tools - Share App
 
-Description Description Description Description Description Description Description
-Description Description Description Description Description Description Description
+This project is not released.
 
 ## Purpose
 
-Purpose purpose purpose purpose purpose purpose purpose purpose purpose purpose purpose
-Purpose purpose purpose purpose purpose purpose purpose purpose purpose purpose purpose
-
-Purpose purpose purpose purpose purpose purpose purpose purpose purpose purpose purpose
-Purpose purpose purpose purpose purpose purpose purpose purpose purpose purpose purpose
+This project creates a user driving app for adding contacts, groups, and trainings to a daily prayer calender
+micro app. This way a multiplier can pray over key elements of their disciple making on a daily basis
+from data living in Disciple Tools.
 
 ## Usage
 
 #### Will Do
 
-- Item
-- Item
-- Item
+- Make a daily, weekly, monthly prayer list from contacts, groups, and trainings
+- Make a micro app, enabled in the settings, for a multiplier to put on their phone home screen
 
 #### Will Not Do
 
-- Item
-- Item
+- Pray for you
 
 ## Requirements
 
@@ -38,13 +33,8 @@ Purpose purpose purpose purpose purpose purpose purpose purpose purpose purpose 
 ## Contribution
 
 Contributions welcome. You can report issues and bugs in the
-[Issues](https://github.com/DiscipleTools/disciple-tools-plugin-starter-template/issues) section of the repo. You can present ideas
-in the [Discussions](https://github.com/DiscipleTools/disciple-tools-plugin-starter-template/discussions) section of the repo. And
-code contributions are welcome using the [Pull Request](https://github.com/DiscipleTools/disciple-tools-plugin-starter-template/pulls)
+[Issues](https://github.com/DiscipleTools/disciple-tools-share-app/issues) section of the repo. You can present ideas
+in the [Discussions](https://github.com/DiscipleTools/disciple-tools-share-app/discussions) section of the repo. And
+code contributions are welcome using the [Pull Request](https://github.com/DiscipleTools/disciple-tools-share-app/pulls)
 system for git. For a more details on contribution see the
-[contribution guidelines](https://github.com/DiscipleTools/disciple-tools-plugin-starter-template/blob/master/CONTRIBUTING.md).
-
-
-## Screenshots
-
-![screenshot](documentation/community/starter-banners/banner-blue-green.png)
+[contribution guidelines](https://github.com/DiscipleTools/disciple-tools-share-app/blob/master/CONTRIBUTING.md).

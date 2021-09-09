@@ -1,0 +1,23 @@
+body {
+    background-color: white !important;
+}
+#wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+}
+#offCanvasLeft ul {
+    list-style-type: none;
+}
+.link {
+    cursor: pointer;
+    color: #3f729b;
+}
+#location-status {
+    height:1.5rem;
+    width:1.5rem;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+}

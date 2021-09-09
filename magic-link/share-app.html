@@ -1,0 +1,31 @@
+<div id="custom-style"></div>
+
+<!-- title -->
+<div class="grid-x">
+    <div class="cell padding-1">
+        <button type="button" style="margin:1em;" data-open="offCanvasLeft"><i class="fi-list" style="font-size:2em;"></i></button>
+        <span class="loading-spinner" style="float:right;margin:10px;"></span><!-- javascript container -->
+    </div>
+</div>
+
+<!-- off canvas menus -->
+<div class="off-canvas-wrapper">
+    <!-- Left Canvas -->
+    <div class="off-canvas position-left" id="offCanvasLeft" data-off-canvas data-transition="push">
+        <button class="close-button" aria-label="Close alert" type="button" data-close>
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="grid-x grid-padding-x">
+            <div class="cell center" style="padding-top: 1em;"><h2>Settings</h2></div>
+            <div class="cell"><hr></div>
+        </div>
+    </div>
+</div>
+
+<!-- body-->
+<div id="wrapper">
+    <div id="content"></div>
+</div>
+<div id="footer-bar">
+    <div id="location-status"></div>
+</div>
