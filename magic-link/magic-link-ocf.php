@@ -57,15 +57,19 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
 
     public function dt_magic_url_base_allowed_js( $allowed_js ) {
         $allowed_js[] = 'share-app-'.$this->type;
+        $allowed_js[] = 'jquery-touch-punch';
+        $allowed_js[] = 'mapbox-gl';
         return $allowed_js;
     }
 
     public function dt_magic_url_base_allowed_css( $allowed_css ) {
         $allowed_css[] = 'share-app-css';
+        $allowed_css[] = 'mapbox-gl-css';
         return $allowed_css;
     }
 
     public function scripts() {
+        wp_register_script( 'jquery-touch-punch', '/wp-includes/js/jquery/jquery.ui.touch-punch.js' ); // @phpcs:ignore
         wp_enqueue_script( 'share-app-'.$this->type, trailingslashit( plugin_dir_url( __FILE__ ) ) . $this->js_file_name, [
             'jquery',
         ], filemtime( trailingslashit( plugin_dir_path( __FILE__ ) ) .$this->js_file_name ), true );
@@ -101,6 +105,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
     }
 
     public function body(){
+        DT_Mapbox_API::geocoder_scripts();
         include('share-app.html');
     }
 
@@ -129,7 +134,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
             case 'log':
                 return $this->endpoint_log( $params['parts'], $params['data'] );
             case 'followup':
-                return $this->endpoint_followup( $params['parts'], $params['post_id'] );
+                return $this->endpoint_followup( $params['parts'], $params['data'] );
             default:
                 return new WP_Error( __METHOD__, "Missing valid action", [ 'status' => 400 ] );
         }
@@ -174,45 +179,27 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
         return Disciple_Tools_Reports::insert( $args );
     }
 
-    public function endpoint_followup( $parts, $post_id ) {
-//        $post_type = get_post_type( $post_id );
-//
-//        $args = [
-//            'parent_id' => $parts['post_id'], // using parent_id to record the user_id. i.e. parent of the record is the user.
-//            'post_id' => $post_id,
-//            'post_type' => $post_type,
-//            'type' => $parts['root'],
-//            'subtype' => $parts['type'],
-//            'payload' => null,
-//            'value' => 1,
-//            'time_end' => time(),
-//        ];
-//
-//        // get geolocation of the contact, not the user
-//        $post_object = DT_Posts::get_post( $post_type, $post_id, false, false, true );
-//        if ( isset( $post_object['location_grid_meta'] ) ) {
-//            $location = $post_object['location_grid_meta'][0];
-//            if ( isset( $location['lng'] ) ) {
-//                $args['lng'] = $location['lng'];
-//                $args['lat'] = $location['lat'];
-//                $args['level'] = $location['level'];
-//                $args['label'] = $location['label'];
-//                $args['grid_id'] = $location['grid_id'];
-//            }
-//        } else if ( isset( $post_object['location_grid'][0] ) ) {
-//            $location = $post_object['location_grid'][0];
-//            $grid_record = Disciple_Tools_Mapping_Queries::get_by_grid_id( $location['id'] );
-//            if ( isset( $grid_record['lng'] ) ) {
-//                $args['lng'] = $grid_record['lng'];
-//                $args['lat'] = $grid_record['lat'];
-//                $args['level'] = $grid_record['level'];
-//                $args['label'] = $location['label'];
-//                $args['grid_id'] = $location['grid_id'];
-//            }
-//        }
+    public function endpoint_followup( $parts, $data ) {
+        dt_write_log($data);
 
-//        return Disciple_Tools_Reports::insert( $args );
-        return true;
+        $notes['note'] = $data['notes'];
+
+        $fields = [
+            'title' => $data['name'],
+            "assigned_to" => $parts['post_id'],
+            "contact_phone" => [
+                ["value" => $data['phone']]
+            ],
+            "contact_email" => [
+                ["value" => $data['email']]
+            ],
+            "type" => 'access',
+            "notes" => $notes
+        ];
+
+//        $contact = DT_Posts::create_post('contacts', $fields, false, false );
+
+        return DT_Posts::create_post('contacts', $fields, false, false );
     }
 }
 //DT_Share_Magic_Link::instance();

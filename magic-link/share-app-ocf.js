@@ -141,7 +141,7 @@ window.write_follow_up = () => {
             <label for="notes">Notes</label>
             <textarea id="notes" name="notes" ></textarea>
             <span id="email-error" class="form-error">
-                You're email is required.
+                You're notes is required.
             </span>
         </div>
         <div class="cell center">
@@ -150,7 +150,7 @@ window.write_follow_up = () => {
     </div>
     `)
 
- let u_location = new mapboxgl.GeolocateControl({positionOptions: {enableHighAccuracy: true},trackUserLocation: true})
+ // let u_location = new mapboxgl.GeolocateControl({positionOptions: {enableHighAccuracy: true},trackUserLocation: true})
 
   let submit_button = jQuery('#submit-log')
   submit_button.on('click', function(){
@@ -204,10 +204,13 @@ window.write_follow_up = () => {
       return;
     }
 
+    let notes = jQuery('#notes').val()
+
     let form_data = {
       name: name,
       email: email,
-      phone: phone
+      phone: phone,
+      notes: notes
     }
 
     jQuery.ajax({
@@ -222,6 +225,7 @@ window.write_follow_up = () => {
     })
       .done(function(response){
         jQuery('.loading-spinner').removeClass('active')
+        window.write_form_screen()
         console.log(response)
 
       })
