@@ -106,7 +106,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
 
     public function body(){
         DT_Mapbox_API::geocoder_scripts();
-        include('share-app.html');
+        include( 'share-app.html' );
     }
 
     public function add_endpoints() {
@@ -144,7 +144,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
         // get user contact record id
         $contact_id = get_user_option( "corresponds_to_contact", $parts['post_id'] );
         if ( empty( $contact_id ) ) {
-            return new WP_Error(__METHOD__, 'No contact id found for user' );
+            return new WP_Error( __METHOD__, 'No contact id found for user' );
         }
 
         $longitude = sanitize_text_field( wp_unslash( $data['longitude'] ) );
@@ -169,9 +169,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
             'level' => '',
             'label' => $full_name,
             'grid_id' => $grid['grid_id'] ?? '',
-            'payload' => [
-
-            ],
+            'payload' => [],
             'value' => 1,
             'time_end' => time(),
         ];
@@ -180,26 +178,22 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
     }
 
     public function endpoint_followup( $parts, $data ) {
-        dt_write_log($data);
 
         $notes['note'] = $data['notes'];
 
         $fields = [
-            'title' => $data['name'],
-            "assigned_to" => $parts['post_id'],
+            'title' => sanitize_text_field( wp_unslash( $data['name'] ) ),
+            "assigned_to" => sanitize_text_field( wp_unslash( $parts['post_id'] ) ),
             "contact_phone" => [
-                ["value" => $data['phone']]
+                [ "value" => sanitize_text_field( wp_unslash( $data['phone'] ) ) ]
             ],
             "contact_email" => [
-                ["value" => $data['email']]
+                [ "value" => sanitize_text_field( wp_unslash( $data['email'] ) ) ]
             ],
             "type" => 'access',
             "notes" => $notes
         ];
 
-//        $contact = DT_Posts::create_post('contacts', $fields, false, false );
-
-        return DT_Posts::create_post('contacts', $fields, false, false );
+        return DT_Posts::create_post( 'contacts', $fields, false, false );
     }
 }
-//DT_Share_Magic_Link::instance();
