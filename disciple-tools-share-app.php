@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Disciple Tools - Share App
+ * Plugin Name: Disciple.Tools - Share App
  * Plugin URI: https://github.com/DiscipleTools/disciple-tools-share-app
  * Description: Add a prayer calendar for users that lets you select contacts and groups, and place them on a daily calendar to pray through.
  * Text Domain: disciple-tools-share-app
