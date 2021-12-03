@@ -80,12 +80,12 @@ class DT_Share {
 
     private function __construct() {
 //        $is_rest = dt_is_rest();
-
+//
 //        if ( strpos( dt_get_url_path(), 'metrics' ) !== false || ( $is_rest && strpos( dt_get_url_path(), 'disciple-tools-share-app-metrics' ) !== false ) ){
 //            require_once( 'charts/charts-loader.php' );  // add custom charts to the metrics area
 //        }
 
-//        require_once( 'tile/custom-tile.php' ); // add custom tile
+        require_once( 'tile/fields.php' );
 
         require_once( 'magic-link/magic-link-ocf.php' );
 

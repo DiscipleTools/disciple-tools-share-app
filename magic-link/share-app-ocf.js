@@ -6,8 +6,12 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
 }
 jQuery(document).ready(function($){
   clearInterval(window.fiveMinuteTimer)
-  window.app_location = { longitude: 0, latitude: 0, accuracy: '' }
-  window.load_app()
+  if ( 'map' === jsObject.parts.action ) {
+    window.load_map()
+  } else {
+    window.app_location = { longitude: 0, latitude: 0, accuracy: '' }
+    window.load_app()
+  }
 })
 
 window.log = (location_data) => {
@@ -31,7 +35,6 @@ window.load_app = () => {
   content.empty()
   window.write_form_screen()
 }
-
 
 window.write_form_screen = () => {
   let content = jQuery('#content')
@@ -72,14 +75,14 @@ window.log_action_button = () => {
   if ( isMobile && navigator.geolocation ) {
     navigator.geolocation.getCurrentPosition(location_success, location_error, {
       enableHighAccuracy: true,
-      timeout: 5000,
+      timeout: 3000,
       maximumAge: 0
     });
   }
   else if ( navigator.geolocation ) {
     navigator.geolocation.getCurrentPosition(location_success, location_error, {
       enableHighAccuracy: true,
-      timeout: 5000,
+      timeout: 3000,
       maximumAge: 0
     });
   }
@@ -89,6 +92,7 @@ window.log_action_button = () => {
     // set location with mapbox map.
   }
 }
+
 window.location_success = (pos) => {
   var crd = pos.coords;
   window.app_location = { longitude: crd.longitude, latitude: crd.latitude, accuracy: crd.accuracy }
@@ -103,11 +107,11 @@ window.location_success = (pos) => {
     jQuery('.loading-spinner').removeClass('active')
   })
 }
+
 window.location_error = (err) => {
   window.app_location = { longitude: 0, latitude: 0, accuracy: '' }
   console.log(err);
 }
-
 
 window.write_follow_up = () => {
   let content = jQuery('#content')
@@ -235,4 +239,142 @@ window.write_follow_up = () => {
       })
   })
 
+}
+
+window.load_map = () => {
+  let content = jQuery('#content')
+  content.empty().html(`
+    <div id="map-wrapper">
+        <div id='map'></div>
+    </div>
+  `)
+  let spinner = $('.loading-spinner')
+
+  // /* LOAD */
+
+  /* set vertical size the form column*/
+  jQuery('#custom-style').append(`
+      <style>
+          #wrapper {
+              height: ${window.innerHeight}px !important;
+          }
+          #map-wrapper {
+              height: ${window.innerHeight-100}px !important;
+          }
+          #map {
+              height: ${window.innerHeight-100}px !important;
+          }
+      </style>`)
+
+
+  window.get_geojson().then(function(data){
+    mapboxgl.accessToken = jsObject.map_key;
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/light-v10',
+      center: [-98, 38.88],
+      minZoom: 0,
+      zoom: 0
+    });
+
+    // disable map rotation using right click + drag
+    map.dragRotate.disable();
+
+    // disable map rotation using touch rotation gesture
+    map.touchZoomRotate.disableRotation();
+
+    map.on('load', function() {
+      map.addSource('layer-source-contacts', {
+        type: 'geojson',
+        data: data,
+        cluster: true,
+        clusterMaxZoom: 20,
+        clusterRadius: 50
+      });
+      map.addLayer({
+        id: 'clusters',
+        type: 'circle',
+        source: 'layer-source-contacts',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#00d9ff',
+            20,
+            '#00aeff',
+            150,
+            '#90C741'
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            20,
+            100,
+            30,
+            750,
+            40
+          ]
+        }
+      });
+      map.addLayer({
+        id: 'cluster-count-contacts',
+        type: 'symbol',
+        source: 'layer-source-contacts',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 12
+        }
+      });
+      map.addLayer({
+        id: 'unclustered-point-contacts',
+        type: 'circle',
+        source: 'layer-source-contacts',
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-color': '#00d9ff',
+          'circle-radius':12,
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#fff'
+        }
+      });
+
+      spinner.removeClass('active')
+
+      // SET BOUNDS
+      window.map_bounds_token = 'share_bound_app'
+      window.map_start = get_map_start( window.map_bounds_token )
+      if ( window.map_start ) {
+        map.fitBounds( window.map_start, {duration: 0});
+      }
+      map.on('zoomend', function() {
+        set_map_start( window.map_bounds_token, map.getBounds() )
+      })
+      map.on('dragend', function() {
+        set_map_start( window.map_bounds_token, map.getBounds() )
+      })
+      // end set bounds
+    });
+
+  })
+
+}
+
+window.get_geojson = () => {
+  return jQuery.ajax({
+    type: "POST",
+    data: JSON.stringify({ action: 'geojson', parts: jsObject.parts }),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    url: jsObject.root + jsObject.parts.root + '/v1/' + jsObject.parts.type,
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader('X-WP-Nonce', jsObject.nonce )
+    }
+  })
+    .fail(function(e) {
+      console.log(e)
+      jQuery('#error').html(e)
+    })
 }

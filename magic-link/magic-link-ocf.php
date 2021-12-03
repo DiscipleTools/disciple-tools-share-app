@@ -12,8 +12,12 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
     public $page_description = 'A micro user app that tracks shares and followup.';
     public $root = "share_app";
     public $type = 'ocf';
-    public $post_type = 'user';
+    public $post_type = 'contacts';
     private $meta_key = '';
+    public $type_actions = [
+        '' => "Share",
+        'map' => "Map View",
+    ];
     public $js_file_name = 'share-app-ocf.js';
 
     private static $_instance = null;
@@ -48,6 +52,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
             return;
         }
 
+
         // load if valid url
         add_action( 'wp_enqueue_scripts', [ $this, 'scripts' ], 99 );
         add_action( 'dt_blank_body', [ $this, 'body' ] );
@@ -59,6 +64,9 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
         $allowed_js[] = 'share-app-'.$this->type;
         $allowed_js[] = 'jquery-touch-punch';
         $allowed_js[] = 'mapbox-gl';
+        $allowed_js[] = 'mapbox-cookie';
+        $allowed_js[] = 'jquery-cookie';
+
         return $allowed_js;
     }
 
@@ -69,6 +77,8 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
     }
 
     public function scripts() {
+        wp_enqueue_script( 'jquery-cookie', 'https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js', [ 'jquery' ], '3.0.0' );
+        wp_enqueue_script( 'mapbox-cookie', trailingslashit( get_stylesheet_directory_uri() ) . 'dt-mapping/geocode-api/mapbox-cookie.js', [ 'jquery', 'jquery-cookie' ], '3.0.0' );
         wp_register_script( 'jquery-touch-punch', '/wp-includes/js/jquery/jquery.ui.touch-punch.js' ); // @phpcs:ignore
         wp_enqueue_script( 'share-app-'.$this->type, trailingslashit( plugin_dir_url( __FILE__ ) ) . $this->js_file_name, [
             'jquery',
@@ -106,8 +116,47 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
 
     public function body(){
         DT_Mapbox_API::geocoder_scripts();
-        include( 'share-app.html' );
+
+        $link = site_url() . '/' . $this->parts['root'] . '/' . $this->parts['type'] . '/' . $this->parts['public_key'] . '/';
+        ?>
+        <div id="custom-style"></div>
+
+        <!-- title -->
+        <div class="grid-x">
+            <div class="cell padding-1">
+                <button type="button" style="margin:1em;" data-open="offCanvasLeft"><i class="fi-list" style="font-size:2em;"></i></button>
+                <span class="loading-spinner" style="float:right;margin:10px;"></span><!-- javascript container -->
+            </div>
+        </div>
+
+        <!-- off canvas menus -->
+        <div class="off-canvas-wrapper">
+            <!-- Left Canvas -->
+            <div class="off-canvas position-left" id="offCanvasLeft" data-off-canvas data-transition="push">
+                <button class="close-button" aria-label="Close alert" type="button" data-close>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="grid-x grid-padding-x">
+                    <div class="cell center" style="padding-top: 1em;"><h2>Settings</h2></div>
+                    <div class="cell"><hr></div>
+                    <ul>
+                        <li><a href="<?php echo esc_url( $link ) ?>">Share</a></li>
+                        <li><a href="<?php echo esc_url( $link . 'map' ) ?>">Map</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- body-->
+        <div id="wrapper">
+            <div id="content"></div>
+        </div>
+        <div id="footer-bar">
+            <div id="location-status"></div>
+        </div>
+        <?php
     }
+
 
     public function add_endpoints() {
         $namespace = $this->root . '/v1';
@@ -135,6 +184,8 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
                 return $this->endpoint_log( $params['parts'], $params['data'] );
             case 'followup':
                 return $this->endpoint_followup( $params['parts'], $params['data'] );
+            case 'geojson':
+                return $this->endpoint_geojson( $params['parts'] );
             default:
                 return new WP_Error( __METHOD__, "Missing valid action", [ 'status' => 400 ] );
         }
@@ -150,7 +201,6 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
         $longitude = sanitize_text_field( wp_unslash( $data['longitude'] ) );
         $latitude = sanitize_text_field( wp_unslash( $data['latitude'] ) );
 
-
         $geocoder = new Location_Grid_Geocoder();
         $grid = $geocoder->get_grid_id_by_lnglat( $longitude, $latitude );
         if ( ! empty( $grid ) ) {
@@ -159,9 +209,15 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
             $full_name = '';
         }
 
+        $user_id = get_post_meta( $data['post_id'], 'corresponds_to_user', true );
+        if ( ! $user_id ) {
+            $user_id = 0;
+        }
+
         $args = [
-            'post_id' => $contact_id,
-            'post_type' => 'contact',
+            'user_id' => $user_id,
+            'post_id' => $parts['post_id'],
+            'post_type' => 'contacts',
             'type' => $parts['root'],
             'subtype' => $parts['type'],
             'lng' => $longitude,
@@ -179,21 +235,87 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
 
     public function endpoint_followup( $parts, $data ) {
 
+        $user_id = get_post_meta( $data['post_id'], 'corresponds_to_user', true );
+        if ( ! $user_id ) {
+            $user_id = 0;
+        }
+
         $notes['note'] = $data['notes'];
 
         $fields = [
             'title' => sanitize_text_field( wp_unslash( $data['name'] ) ),
-            "assigned_to" => sanitize_text_field( wp_unslash( $parts['post_id'] ) ),
+            "assigned_to" => sanitize_text_field( wp_unslash( $user_id ) ),
+            "subassigned" => [
+                "values" => [
+                    [ "value" => sanitize_text_field( wp_unslash( $parts['post_id'] ) ) ],
+                ],
+            ],
+            "type" => 'access',
             "contact_phone" => [
                 [ "value" => sanitize_text_field( wp_unslash( $data['phone'] ) ) ]
             ],
             "contact_email" => [
                 [ "value" => sanitize_text_field( wp_unslash( $data['email'] ) ) ]
             ],
-            "type" => 'access',
             "notes" => $notes
         ];
 
         return DT_Posts::create_post( 'contacts', $fields, false, false );
+    }
+
+    public function endpoint_geojson( $parts ) {
+        global $wpdb;
+        $contact_id = $parts['post_id'];
+        $results = $wpdb->get_results( $wpdb->prepare(
+            "SELECT *
+                    FROM $wpdb->dt_reports
+                    WHERE post_id = %d
+                    AND type = 'share_app'
+                    AND subtype = 'ocf'
+                    ORDER BY time_end DESC
+        ", $contact_id ), ARRAY_A );
+
+        if ( empty( $results ) ) {
+            return $this->_empty_geojson();
+        }
+
+        foreach ($results as $index => $result) {
+            $results[$index]['payload'] = maybe_unserialize( $result['payload'] );
+        }
+
+        // @todo sum multiple reports for same area
+
+        $features = [];
+        foreach ($results as $result) {
+            // build feature
+            $features[] = array(
+                'type' => 'Feature',
+                'properties' => array(
+                    'label' => $result['label']
+                ),
+                'geometry' => array(
+                    'type' => 'Point',
+                    'coordinates' => array(
+                        (float) $result['lng'],
+                        (float) $result['lat'],
+                        1
+                    ),
+                ),
+            );
+        }
+
+        $geojson = array(
+            'type' => 'FeatureCollection',
+            'features' => $features,
+        );
+
+        return $geojson;
+    }
+
+    private function _empty_geojson() {
+        return array(
+            'type' => 'FeatureCollection',
+            'features' => array()
+        );
     }
 }
