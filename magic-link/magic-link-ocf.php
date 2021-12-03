@@ -193,11 +193,6 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
 
     public function endpoint_log( $parts, $data ) {
         // get user contact record id
-        $contact_id = get_user_option( "corresponds_to_contact", $parts['post_id'] );
-        if ( empty( $contact_id ) ) {
-            return new WP_Error( __METHOD__, 'No contact id found for user' );
-        }
-
         $longitude = sanitize_text_field( wp_unslash( $data['longitude'] ) );
         $latitude = sanitize_text_field( wp_unslash( $data['latitude'] ) );
 
