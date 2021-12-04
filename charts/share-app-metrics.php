@@ -1,20 +1,15 @@
 <?php
 if ( !defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly.
 
-/**
- * @todo replace all occurrences of the string "template" with a string of your choice
- * @todo also rename in charts-loader.php
- */
-
 class DT_Share_Chart_Template extends DT_Metrics_Chart_Base
 {
-    public $base_slug = 'disciple-tools-share-app-metrics'; // lowercase
+    public $base_slug = 'share-app-metrics'; // lowercase
     public $base_title = "Share App Metrics";
 
-    public $title = 'Template';
-    public $slug = 'template'; // lowercase
+    public $title = 'Map';
+    public $slug = 'map'; // lowercase
     public $js_object_name = 'wp_js_object'; // This object will be loaded into the metrics.js file by the wp_localize_script.
-    public $js_file_name = 'one-page-chart-template.js'; // should be full file name plus extension
+    public $js_file_name = 'share-app-metrics.js'; // should be full file name plus extension
     public $permissions = [ 'dt_all_access_contacts', 'view_project_metrics' ];
 
     public function __construct() {
@@ -33,8 +28,7 @@ class DT_Share_Chart_Template extends DT_Metrics_Chart_Base
             add_action( 'wp_enqueue_scripts', [ $this, 'scripts' ], 99 );
         }
     }
-
-
+    
     /**
      * Load scripts for the plugin
      */

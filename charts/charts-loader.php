@@ -13,7 +13,7 @@ class DT_Share_Charts
 
     public function __construct(){
 
-        require_once( 'one-page-chart-template.php' );
+        require_once( 'share-app-metrics.php' );
         new DT_Share_Chart_Template();
 
         /**

@@ -6,11 +6,11 @@
     jQuery('#metrics-sidemenu').foundation('down', jQuery(`#${window.wp_js_object.base_slug}-menu`));
 
 
-    show_template_overview()
+    show_share_app_overview()
 
   })
 
-  function show_template_overview(){
+  function show_share_app_overview(){
 
     let localizedObject = window.wp_js_object // change this object to the one named in ui-menu-and-enqueue.php
     let translations = localizedObject.translations
@@ -21,9 +21,9 @@
       <span class="section-header">${localizedObject.translations.title}</span>
 
       <hr style="max-width:100%;">
-      
+
       <div id="chartdiv"></div>
-      
+
       <hr style="max-width:100%;">
 
       <button type="button" onclick="sample_api_call('Yeh successful response from API!')" class="button" id="sample_button">${translations["Sample API Call"]}</button>
