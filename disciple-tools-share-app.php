@@ -77,11 +77,11 @@ class DT_Share {
     }
 
     private function __construct() {
-//        $is_rest = dt_is_rest();
-//
-//        if ( strpos( dt_get_url_path(), 'metrics' ) !== false || ( $is_rest && strpos( dt_get_url_path(), 'disciple-tools-share-app-metrics' ) !== false ) ){
-//            require_once( 'charts/charts-loader.php' );  // add custom charts to the metrics area
-//        }
+        $is_rest = dt_is_rest();
+
+        if ( strpos( dt_get_url_path(), 'metrics' ) !== false || ( $is_rest && strpos( dt_get_url_path(), 'share-app-metrics' ) !== false ) ){
+            require_once( 'charts/charts-loader.php' );  // add custom charts to the metrics area
+        }
 
         require_once( 'tile/fields.php' );
 
@@ -103,8 +103,9 @@ class DT_Share {
         if ( strpos( $plugin_file_name, basename( __FILE__ ) ) ) {
             // You can still use `array_unshift()` to add links at the beginning.
 
-            $links_array[] = '<a href="https://disciple.tools">Disciple.Tools Community</a>'; // @todo replace with your links.
-            // @todo add other links here
+            $links_array[] = '<a href="https://disciple.tools">Disciple.Tools Community</a>';
+            $links_array[] = '<a href="https://github.com/DiscipleTools/disciple-tools-share-apps">Github Project</a>';
+
         }
 
         return $links_array;

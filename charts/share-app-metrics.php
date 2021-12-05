@@ -4,7 +4,7 @@ if ( !defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly.
 class DT_Share_Chart_Template extends DT_Metrics_Chart_Base
 {
     public $base_slug = 'share-app-metrics'; // lowercase
-    public $base_title = "Share App Metrics";
+    public $base_title = "Share App";
 
     public $title = 'Map';
     public $slug = 'map'; // lowercase
@@ -24,7 +24,6 @@ class DT_Share_Chart_Template extends DT_Metrics_Chart_Base
 
         // only load scripts if exact url
         if ( "metrics/$this->base_slug/$this->slug" === $url_path ) {
-
             add_action( 'wp_enqueue_scripts', [ $this, 'scripts' ], 99 );
         }
     }
@@ -34,18 +33,19 @@ class DT_Share_Chart_Template extends DT_Metrics_Chart_Base
      */
     public function scripts() {
 
-        wp_register_script( 'amcharts-core', 'https://www.amcharts.com/lib/4/core.js', false, '4' );
-        wp_register_script( 'amcharts-charts', 'https://www.amcharts.com/lib/4/charts.js', false, '4' );
+        DT_Mapbox_API::load_mapbox_header_scripts();
+
+        wp_enqueue_script( 'jquery-cookie', 'https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js', [ 'jquery' ], '3.0.0' );
+        wp_enqueue_script( 'mapbox-cookie', trailingslashit( get_stylesheet_directory_uri() ) . 'dt-mapping/geocode-api/mapbox-cookie.js', [ 'jquery', 'jquery-cookie' ], '3.0.0' );
 
         wp_enqueue_script( 'dt_'.$this->slug.'_script', trailingslashit( plugin_dir_url( __FILE__ ) ) . $this->js_file_name, [
             'jquery',
-            'amcharts-core',
-            'amcharts-charts'
         ], filemtime( plugin_dir_path( __FILE__ ) .$this->js_file_name ), true );
 
         // Localize script with array data
         wp_localize_script(
             'dt_'.$this->slug.'_script', $this->js_object_name, [
+                'map_key' => DT_Mapbox_API::get_key(),
                 'rest_endpoints_base' => esc_url_raw( rest_url() ) . "$this->base_slug/$this->slug",
                 'base_slug' => $this->base_slug,
                 'slug' => $this->slug,
@@ -68,9 +68,9 @@ class DT_Share_Chart_Template extends DT_Metrics_Chart_Base
     public function add_api_routes() {
         $namespace = "$this->base_slug/$this->slug";
         register_rest_route(
-            $namespace, '/sample', [
+            $namespace, '/geojson', [
                 'methods'  => 'POST',
-                'callback' => [ $this, 'sample' ],
+                'callback' => [ $this, 'endpoint_geojson' ],
                 'permission_callback' => function( WP_REST_Request $request ) {
                     return $this->has_permission();
                 },
@@ -78,15 +78,49 @@ class DT_Share_Chart_Template extends DT_Metrics_Chart_Base
         );
     }
 
-    public function sample( WP_REST_Request $request ) {
-        $params = $request->get_params();
-        if ( isset( $params['button_data'] ) ) {
-            // Do something
-            $results = $params['button_data'];
-            return $results;
-        } else {
-            return new WP_Error( __METHOD__, 'Missing parameters.' );
+    public function endpoint_geojson( WP_REST_Request $request ) {
+        global $wpdb;
+        $results = $wpdb->get_results(
+            "SELECT *
+                    FROM $wpdb->dt_reports
+                    WHERE type = 'share_app'
+                    AND subtype = 'ocf'
+                    ORDER BY time_end DESC
+        ", ARRAY_A );
+
+        if ( empty( $results ) ) {
+            return $this->_empty_geojson();
         }
+
+        foreach ($results as $index => $result) {
+            $results[$index]['payload'] = maybe_unserialize( $result['payload'] );
+        }
+
+        $features = [];
+        foreach ($results as $result) {
+            // build feature
+            $features[] = array(
+                'type' => 'Feature',
+                'properties' => array(
+                    'label' => $result['label']
+                ),
+                'geometry' => array(
+                    'type' => 'Point',
+                    'coordinates' => array(
+                        (float) $result['lng'],
+                        (float) $result['lat'],
+                        1
+                    ),
+                ),
+            );
+        }
+
+        $geojson = array(
+            'type' => 'FeatureCollection',
+            'features' => $features,
+        );
+
+        return $geojson;
     }
 
 }
