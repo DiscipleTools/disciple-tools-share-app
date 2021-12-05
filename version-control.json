@@ -1,8 +1,8 @@
 {
 
-  "name": "Disciple Tools - Share App",
-  "version": "0.1",
-  "last_updated": "2021-03",
+  "name": "Disciple.Tools - Share App",
+  "version": "0.2",
+  "last_updated": "2021-12",
   "author": "Disciple Tools",
   "author_homepage": "https://disciple.tools",
   "git_owner": "DiscipleTools",
@@ -16,14 +16,14 @@
   "license_url": "https://raw.githubusercontent.com/DiscipleTools/disciple-tools-share-app/master/LICENSE",
   "readme_url": "https://raw.githubusercontent.com/DiscipleTools/disciple-tools-share-app/master/README.md",
   "requires": "4.7",
-  "tested": "5.7",
+  "tested": "5.8",
   "upgrade_notice": "Upgrade to get the latest features.",
   "banners": {
     "low": "https://raw.githubusercontent.com/DiscipleTools/disciple-tools-share-app/master/documentation/banner.png",
     "high": "https://raw.githubusercontent.com/DiscipleTools/disciple-tools-share-app/master/documentation/banner.png"
   },
   "sections": {
-    "description": "Add a share app for prayer walking and face-to-face street ev.",
+    "description": "Add a share app for prayer walking and face-to-face street evangelism.",
     "installation": "(Required) You must have Disciple.Tools Theme installed before using this plugin. Once Disciple.Tools is installed, you can use the normal Plugin system to install the plugin.",
     "changelog": ""
   }

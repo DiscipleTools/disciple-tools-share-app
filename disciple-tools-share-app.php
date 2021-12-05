@@ -2,15 +2,15 @@
 /**
  * Plugin Name: Disciple.Tools - Share App
  * Plugin URI: https://github.com/DiscipleTools/disciple-tools-share-app
- * Description: Add a prayer calendar for users that lets you select contacts and groups, and place them on a daily calendar to pray through.
+ * Description: Add a share app to Disciple.Tools for street evangelism. Tracks share locations.
  * Text Domain: disciple-tools-share-app
  * Domain Path: /languages
- * Version:  0.1
+ * Version:  0.2
  * Author URI: https://github.com/DiscipleTools
  * GitHub Plugin URI: https://github.com/DiscipleTools/disciple-tools-share-app
  * Requires at least: 4.7.0
  * (Requires 4.7+ because of the integration of the REST API at 4.7 and the security requirements of this milestone version.)
- * Tested up to: 5.6
+ * Tested up to: 5.8
  *
  * @package Disciple_Tools
  * @link    https://github.com/DiscipleTools
@@ -21,8 +21,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
-
-
 
 /**
  * Gets the instance of the `DT_Share` class.
