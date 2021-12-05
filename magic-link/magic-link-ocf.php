@@ -140,8 +140,8 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
                     <div class="cell center" style="padding-top: 1em;"><h2>Settings</h2></div>
                     <div class="cell"><hr></div>
                     <ul>
-                        <li><a href="<?php echo esc_url( $link ) ?>">Share</a></li>
-                        <li><a href="<?php echo esc_url( $link . 'map' ) ?>">Map</a></li>
+                        <li><h2><a href="<?php echo esc_url( $link ) ?>">Share Home</a></h2></li>
+                        <li><h2><a href="<?php echo esc_url( $link . 'map' ) ?>">My Map</a></h2></li>
                     </ul>
                 </div>
             </div>
@@ -230,7 +230,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
 
     public function endpoint_followup( $parts, $data ) {
 
-        $user_id = get_post_meta( $data['post_id'], 'corresponds_to_user', true );
+        $user_id = get_post_meta( $parts['post_id'], 'corresponds_to_user', true );
         if ( ! $user_id ) {
             $user_id = 0;
         }
