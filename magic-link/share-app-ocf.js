@@ -9,15 +9,21 @@ jQuery(document).ready(function($){
   if ( 'map' === jsObject.parts.action ) {
     window.load_map()
   } else {
-    window.app_location = { longitude: 0, latitude: 0, accuracy: '' }
     window.load_app()
   }
 })
 
-window.log = (location_data) => {
+window.log = (state) => {
+  if ( typeof window.app_location === 'undefined' ) {
+    window.set_location()
+  }
+  let data = {
+    location: window.app_location,
+    state: state
+  }
   return jQuery.ajax({
     type: "POST",
-    data: JSON.stringify({ action: 'log', parts: jsObject.parts, data: location_data }),
+    data: JSON.stringify({ action: 'log', parts: jsObject.parts, data: data }),
     contentType: "application/json; charset=utf-8",
     dataType: "json",
     url: jsObject.root + jsObject.parts.root + '/v1/' + jsObject.parts.type,
@@ -61,17 +67,32 @@ window.write_form_screen = () => {
       write_follow_up()
     }
     else {
-      log_action_button()
+      if ( typeof window.app_location === 'undefined' ) {
+        console.log('not defined')
+        const post_location = async () => {
+          const result = await window.set_location()
+          window.log( v ).done(function(data){
+            console.log(data)
+            jQuery('.actions').prop('disabled', false )
+            jQuery('.loading-spinner').removeClass('active')
+          })
+        }
+      }
+      else {
+        console.log('defined')
+        window.log( v ).done(function(data){
+          console.log(data)
+          jQuery('.actions').prop('disabled', false )
+          jQuery('.loading-spinner').removeClass('active')
+        })
+      }
     }
   })
+
+  window.set_location()
 }
 
-window.log_action_button = () => {
-  let action_buttons = jQuery('.actions')
-  action_buttons.prop('disabled', true )
-  let spinner = jQuery('.loading-spinner')
-  spinner.addClass('active')
-
+window.set_location = () => {
   if ( isMobile && navigator.geolocation ) {
     navigator.geolocation.getCurrentPosition(location_success, location_error, {
       enableHighAccuracy: true,
@@ -88,8 +109,7 @@ window.log_action_button = () => {
   }
   else {
     console.log('trigger manual location set')
-    // if ipstack available, get starter location with ipaddress
-    // set location with mapbox map.
+    window.app_location = { longitude: 0, latitude: 0, accuracy: '' }
   }
 }
 
@@ -101,11 +121,6 @@ window.location_success = (pos) => {
   console.log(`Latitude : ${crd.latitude}`);
   console.log(`Longitude: ${crd.longitude}`);
   console.log(`More or less ${crd.accuracy} meters.`);
-
-  window.log( window.app_location ).done(function(data){
-    jQuery('.actions').prop('disabled', false )
-    jQuery('.loading-spinner').removeClass('active')
-  })
 }
 
 window.location_error = (err) => {

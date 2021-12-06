@@ -193,8 +193,8 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
 
     public function endpoint_log( $parts, $data ) {
         // get user contact record id
-        $longitude = sanitize_text_field( wp_unslash( $data['longitude'] ) );
-        $latitude = sanitize_text_field( wp_unslash( $data['latitude'] ) );
+        $longitude = sanitize_text_field( wp_unslash( $data['location']['longitude'] ) );
+        $latitude = sanitize_text_field( wp_unslash( $data['location']['latitude'] ) );
 
         $geocoder = new Location_Grid_Geocoder();
         $grid = $geocoder->get_grid_id_by_lnglat( $longitude, $latitude );
@@ -204,11 +204,16 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
             $full_name = '';
         }
 
-        $user_id = get_post_meta( $data['post_id'], 'corresponds_to_user', true );
+        $user_id = get_post_meta( $parts['post_id'], 'corresponds_to_user', true );
         if ( ! $user_id ) {
             $user_id = 0;
         }
 
+        $state = 0;
+        if ( 'open' === $data['state'] ) {
+            $state = 1;
+        }
+        
         $args = [
             'user_id' => $user_id,
             'post_id' => $parts['post_id'],
@@ -220,8 +225,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
             'level' => '',
             'label' => $full_name,
             'grid_id' => $grid['grid_id'] ?? '',
-            'payload' => [],
-            'value' => 1,
+            'value' => $state,
             'time_end' => time(),
         ];
 
