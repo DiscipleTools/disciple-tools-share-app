@@ -2,24 +2,21 @@
 
 # Disciple Tools - Share App
 
-This project is not released.
-
 ## Purpose
 
-This project creates a user driving app for adding contacts, groups, and trainings to a daily prayer calender
-micro app. This way a multiplier can pray over key elements of their disciple making on a daily basis
-from data living in Disciple Tools.
+This app generates a magic link for each contact and user that can be used to track closed and open gospel shares,
+as well as a simple followup form. If added to the home screen on a mobile phone, it creates a simple tool for
+face to face evangelism.
 
 ## Usage
 
 #### Will Do
 
-- Make a daily, weekly, monthly prayer list from contacts, groups, and trainings
-- Make a micro app, enabled in the settings, for a multiplier to put on their phone home screen
+- Simple logging of open and closed gospel sharing attempts.
+- Simple personal map record of your gospel shares.
+- Metrics map of all gospel shares in the system.
 
 #### Will Not Do
-
-- Pray for you
 
 ## Requirements
 
