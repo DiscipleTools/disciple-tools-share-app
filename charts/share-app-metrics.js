@@ -45,7 +45,7 @@
         style: 'mapbox://styles/mapbox/light-v10',
         center: [-98, 38.88],
         minZoom: 0,
-        zoom: 0
+        zoom: 2
       });
 
       // disable map rotation using right click + drag
@@ -55,27 +55,43 @@
       map.touchZoomRotate.disableRotation();
 
       map.on('load', function() {
-        map.addSource('layer-source-contacts', {
+        map.addSource('layer-source-closed', {
           type: 'geojson',
-          data: data,
+          data: data.closed,
           cluster: true,
-          clusterMaxZoom: 20,
+          clusterMaxZoom: 5,
           clusterRadius: 50
         });
+        map.addSource('layer-source-open', {
+          type: 'geojson',
+          data: data.open,
+          cluster: true,
+          clusterMaxZoom: 5,
+          clusterRadius: 50
+        });
+        map.addSource('layer-source-followup', {
+          type: 'geojson',
+          data: data.followup,
+          cluster: true,
+          clusterMaxZoom: 5,
+          clusterRadius: 50
+        });
+
+        // closed
         map.addLayer({
-          id: 'clusters',
+          id: 'closed',
           type: 'circle',
-          source: 'layer-source-contacts',
+          source: 'layer-source-closed',
           filter: ['has', 'point_count'],
           paint: {
             'circle-color': [
               'step',
               ['get', 'point_count'],
-              '#00d9ff',
+              '#ff2600',
               20,
-              '#00aeff',
+              '#ff2600',
               150,
-              '#90C741'
+              '#ff2600'
             ],
             'circle-radius': [
               'step',
@@ -89,20 +105,71 @@
           }
         });
         map.addLayer({
-          id: 'cluster-count-contacts',
+          id: 'cluster-count-closed',
           type: 'symbol',
-          source: 'layer-source-contacts',
+          source: 'layer-source-closed',
           filter: ['has', 'point_count'],
           layout: {
-            'text-field': '{point_count_abbreviated}',
+            'text-field': '',
             'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
             'text-size': 12
           }
         });
         map.addLayer({
-          id: 'unclustered-point-contacts',
+          id: 'unclustered-point-closed',
           type: 'circle',
-          source: 'layer-source-contacts',
+          source: 'layer-source-closed',
+          filter: ['!', ['has', 'point_count']],
+          paint: {
+            'circle-color': '#ff2600',
+            'circle-radius':12,
+            'circle-stroke-width': 1,
+            'circle-stroke-color': '#fff'
+          }
+        });
+
+        // open
+        map.addLayer({
+          id: 'open',
+          type: 'circle',
+          source: 'layer-source-open',
+          filter: ['has', 'point_count'],
+          paint: {
+            'circle-color': [
+              'step',
+              ['get', 'point_count'],
+              '#00d9ff',
+              20,
+              '#00d9ff',
+              150,
+              '#00d9ff'
+            ],
+            'circle-radius': [
+              'step',
+              ['get', 'point_count'],
+              20,
+              100,
+              30,
+              750,
+              40
+            ]
+          }
+        });
+        map.addLayer({
+          id: 'cluster-count-open',
+          type: 'symbol',
+          source: 'layer-source-open',
+          filter: ['has', 'point_count'],
+          layout: {
+            'text-field': '',
+            'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+            'text-size': 12
+          }
+        });
+        map.addLayer({
+          id: 'unclustered-point-open',
+          type: 'circle',
+          source: 'layer-source-open',
           filter: ['!', ['has', 'point_count']],
           paint: {
             'circle-color': '#00d9ff',
@@ -112,14 +179,70 @@
           }
         });
 
+        // followup
+        map.addLayer({
+          id: 'followup',
+          type: 'circle',
+          source: 'layer-source-followup',
+          filter: ['has', 'point_count'],
+          paint: {
+            'circle-color': [
+              'step',
+              ['get', 'point_count'],
+              '#00ff26',
+              20,
+              '#00ff26',
+              150,
+              '#00ff26'
+            ],
+            'circle-radius': [
+              'step',
+              ['get', 'point_count'],
+              20,
+              100,
+              30,
+              750,
+              40
+            ]
+          }
+        });
+        map.addLayer({
+          id: 'cluster-count-followup',
+          type: 'symbol',
+          source: 'layer-source-followup',
+          filter: ['has', 'point_count'],
+          layout: {
+            'text-field': '',
+            'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+            'text-size': 12
+          }
+        });
+        map.addLayer({
+          id: 'unclustered-point-followup',
+          type: 'circle',
+          source: 'layer-source-followup',
+          filter: ['!', ['has', 'point_count']],
+          paint: {
+            'circle-color': '#00ff26',
+            'circle-radius':12,
+            'circle-stroke-width': 1,
+            'circle-stroke-color': '#fff'
+          }
+        });
+
         spinner.removeClass('active')
 
         var bounds = new mapboxgl.LngLatBounds();
-        data.features.forEach(function(feature) {
+        data.closed.features.forEach(function(feature) {
+          bounds.extend(feature.geometry.coordinates);
+        });
+        data.open.features.forEach(function(feature) {
+          bounds.extend(feature.geometry.coordinates);
+        });
+        data.followup.features.forEach(function(feature) {
           bounds.extend(feature.geometry.coordinates);
         });
         map.fitBounds(bounds, { padding: {top: 20, bottom:20, left: 20, right: 20 } });
-
       });
 
     })

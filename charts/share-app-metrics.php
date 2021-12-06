@@ -89,20 +89,32 @@ class DT_Share_Chart_Template extends DT_Metrics_Chart_Base
         ", ARRAY_A );
 
         if ( empty( $results ) ) {
-            return $this->_empty_geojson();
+            return [
+                'closed' => [
+                    'type' => 'FeatureCollection',
+                    'features' => [],
+                ],
+                'open' => [
+                    'type' => 'FeatureCollection',
+                    'features' => [],
+                ],
+                'followup' => [
+                    'type' => 'FeatureCollection',
+                    'features' => [],
+                ]
+            ];
         }
 
-        foreach ($results as $index => $result) {
-            $results[$index]['payload'] = maybe_unserialize( $result['payload'] );
-        }
-
-        $features = [];
+        $data = [
+            'closed' => [],
+            'open' => [],
+            'followup' => []
+        ];
         foreach ($results as $result) {
-            // build feature
-            $features[] = array(
+            $feature = array(
                 'type' => 'Feature',
                 'properties' => array(
-                    'label' => $result['label']
+                    'type' => $result['value']
                 ),
                 'geometry' => array(
                     'type' => 'Point',
@@ -113,14 +125,29 @@ class DT_Share_Chart_Template extends DT_Metrics_Chart_Base
                     ),
                 ),
             );
+            if ( '0' === $result['value'] ) {
+                $data['closed'][] = $feature;
+            } else if ( '1' === $result['value'] ) {
+                $data['open'][] = $feature;
+            } else if ( '2' === $result['value'] ) {
+                $data['followup'][] = $feature;
+            }
         }
 
-        $geojson = array(
-            'type' => 'FeatureCollection',
-            'features' => $features,
-        );
-
-        return $geojson;
+        return [
+            'closed' => [
+                'type' => 'FeatureCollection',
+                'features' => $data['closed'],
+            ],
+            'open' => [
+                'type' => 'FeatureCollection',
+                'features' => $data['open'],
+            ],
+            'followup' => [
+                'type' => 'FeatureCollection',
+                'features' => $data['followup'],
+            ]
+        ];
     }
 
 }
