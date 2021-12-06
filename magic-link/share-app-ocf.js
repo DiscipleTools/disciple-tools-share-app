@@ -297,7 +297,8 @@ window.write_follow_up = () => {
       name: name,
       email: email,
       phone: phone,
-      notes: notes
+      notes: notes,
+      location: window.app_location
     }
 
     jQuery.ajax({
@@ -360,57 +361,44 @@ window.load_map = () => {
     map.touchZoomRotate.disableRotation();
 
     map.on('load', function() {
-      map.addSource('layer-source-contacts', {
+      map.addSource('layer-source', {
         type: 'geojson',
-        data: data,
-        cluster: true,
-        clusterMaxZoom: 20,
-        clusterRadius: 50
+        data: data
       });
+
       map.addLayer({
-        id: 'clusters',
+        id: 'closed',
         type: 'circle',
-        source: 'layer-source-contacts',
-        filter: ['has', 'point_count'],
+        source: 'layer-source',
+        filter: ['in', 'type', '0'],
         paint: {
-          'circle-color': [
-            'step',
-            ['get', 'point_count'],
-            '#00d9ff',
-            20,
-            '#00aeff',
-            150,
-            '#90C741'
-          ],
-          'circle-radius': [
-            'step',
-            ['get', 'point_count'],
-            20,
-            100,
-            30,
-            750,
-            40
-          ]
+          'circle-color': '#ff2600',
+          'circle-radius':12,
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#fff'
         }
       });
+
       map.addLayer({
-        id: 'cluster-count-contacts',
-        type: 'symbol',
-        source: 'layer-source-contacts',
-        filter: ['has', 'point_count'],
-        layout: {
-          'text-field': '{point_count_abbreviated}',
-          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-          'text-size': 12
-        }
-      });
-      map.addLayer({
-        id: 'unclustered-point-contacts',
+        id: 'open',
         type: 'circle',
-        source: 'layer-source-contacts',
-        filter: ['!', ['has', 'point_count']],
+        source: 'layer-source',
+        filter: ['in', 'type', '1'],
         paint: {
           'circle-color': '#00d9ff',
+          'circle-radius':12,
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#fff'
+        }
+      });
+
+      map.addLayer({
+        id: 'followup',
+        type: 'circle',
+        source: 'layer-source',
+        filter: ['in', 'type', '2'],
+        paint: {
+          'circle-color': '#00ff26',
           'circle-radius':12,
           'circle-stroke-width': 1,
           'circle-stroke-color': '#fff'

@@ -38,7 +38,7 @@
 
     console.log('here')
     window.get_geojson().then(function(data){
-      console.log(data)
+
       mapboxgl.accessToken = window.wp_js_object.map_key;
       var map = new mapboxgl.Map({
         container: 'map',
@@ -114,19 +114,12 @@
 
         spinner.removeClass('active')
 
-        // SET BOUNDS
-        window.map_bounds_token = 'share_bound_app'
-        window.map_start = get_map_start( window.map_bounds_token )
-        if ( window.map_start ) {
-          map.fitBounds( window.map_start, {duration: 0});
-        }
-        map.on('zoomend', function() {
-          set_map_start( window.map_bounds_token, map.getBounds() )
-        })
-        map.on('dragend', function() {
-          set_map_start( window.map_bounds_token, map.getBounds() )
-        })
-        // end set bounds
+        var bounds = new mapboxgl.LngLatBounds();
+        data.features.forEach(function(feature) {
+          bounds.extend(feature.geometry.coordinates);
+        });
+        map.fitBounds(bounds, { padding: {top: 20, bottom:20, left: 20, right: 20 } });
+
       });
 
     })

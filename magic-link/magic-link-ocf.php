@@ -137,7 +137,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <div class="grid-x grid-padding-x">
-                    <div class="cell center" style="padding-top: 1em;"><h2>Settings</h2></div>
+                    <div class="cell center" style="padding-top: 1em;"><h2>Share App</h2></div>
                     <div class="cell"><hr></div>
                     <ul>
                         <li><h2><a href="<?php echo esc_url( $link ) ?>">Share Home</a></h2></li>
@@ -192,6 +192,11 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
     }
 
     public function endpoint_log( $parts, $data ) {
+
+        if ( ! isset( $data['state'], $data['location'] ) ) {
+            return new WP_Error( __METHOD__, "Missing required parameters", [ 'status' => 400, 'data' => $data ] );
+        }
+
         // get user contact record id
         $longitude = sanitize_text_field( wp_unslash( $data['location']['longitude'] ) );
         $latitude = sanitize_text_field( wp_unslash( $data['location']['latitude'] ) );
@@ -213,6 +218,9 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
         if ( 'open' === $data['state'] ) {
             $state = 1;
         }
+        else if ( 'followup' === $data['state'] ){
+            $state = 2;
+        }
 
         $args = [
             'user_id' => $user_id,
@@ -233,6 +241,10 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
     }
 
     public function endpoint_followup( $parts, $data ) {
+
+        if ( ! isset( $data['email'], $data['phone'], $data['name'], $data['location'] ) ) {
+            return new WP_Error( __METHOD__, "Missing required parameters", [ 'status' => 400, 'data' => $data ] );
+        }
 
         $user_id = get_post_meta( $parts['post_id'], 'corresponds_to_user', true );
         if ( ! $user_id ) {
@@ -259,14 +271,24 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
             "notes" => $notes
         ];
 
-        return DT_Posts::create_post( 'contacts', $fields, false, false );
+        $post_id = DT_Posts::create_post( 'contacts', $fields, false, false );
+
+        $report_id = $this->endpoint_log( $parts, [
+            'location' => $data['location'],
+            'state' => 'followup'
+        ] );
+
+        return [
+          'post_id' => $post_id,
+          'report' =>   $report_id
+        ];
     }
 
     public function endpoint_geojson( $parts ) {
         global $wpdb;
         $contact_id = $parts['post_id'];
         $results = $wpdb->get_results( $wpdb->prepare(
-            "SELECT lng, lat, value, label
+            "SELECT lng, lat, value as type, label
                     FROM $wpdb->dt_reports
                     WHERE post_id = %d
                     AND type = 'share_app'
@@ -284,7 +306,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
                 'type' => 'Feature',
                 'properties' => array(
                     'label' => $result['label'],
-                    'type' => $result['value']
+                    'type' => $result['type']
                 ),
                 'geometry' => array(
                     'type' => 'Point',
