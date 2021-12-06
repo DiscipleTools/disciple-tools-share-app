@@ -266,7 +266,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
         global $wpdb;
         $contact_id = $parts['post_id'];
         $results = $wpdb->get_results( $wpdb->prepare(
-            "SELECT *
+            "SELECT lng, lat, value, label
                     FROM $wpdb->dt_reports
                     WHERE post_id = %d
                     AND type = 'share_app'
@@ -278,19 +278,13 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
             return $this->_empty_geojson();
         }
 
-        foreach ($results as $index => $result) {
-            $results[$index]['payload'] = maybe_unserialize( $result['payload'] );
-        }
-
-        // @todo sum multiple reports for same area
-
         $features = [];
         foreach ($results as $result) {
-            // build feature
             $features[] = array(
                 'type' => 'Feature',
                 'properties' => array(
-                    'label' => $result['label']
+                    'label' => $result['label'],
+                    'type' => $result['value']
                 ),
                 'geometry' => array(
                     'type' => 'Point',

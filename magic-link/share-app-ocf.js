@@ -333,14 +333,9 @@ window.load_map = () => {
   `)
   let spinner = jQuery('.loading-spinner')
 
-  // /* LOAD */
-
   /* set vertical size the form column*/
   jQuery('#custom-style').append(`
       <style>
-          #wrapper {
-              height: ${window.innerHeight}px !important;
-          }
           #map-wrapper {
               height: ${window.innerHeight-100}px !important;
           }
@@ -351,6 +346,7 @@ window.load_map = () => {
 
 
   window.get_geojson().then(function(data){
+
     mapboxgl.accessToken = jsObject.map_key;
     var map = new mapboxgl.Map({
       container: 'map',
@@ -360,10 +356,7 @@ window.load_map = () => {
       zoom: 0
     });
 
-    // disable map rotation using right click + drag
     map.dragRotate.disable();
-
-    // disable map rotation using touch rotation gesture
     map.touchZoomRotate.disableRotation();
 
     map.on('load', function() {
@@ -426,23 +419,14 @@ window.load_map = () => {
 
       spinner.removeClass('active')
 
-      // SET BOUNDS
-      window.map_bounds_token = 'share_bound_app'
-      window.map_start = get_map_start( window.map_bounds_token )
-      if ( window.map_start ) {
-        map.fitBounds( window.map_start, {duration: 0});
-      }
-      map.on('zoomend', function() {
-        set_map_start( window.map_bounds_token, map.getBounds() )
-      })
-      map.on('dragend', function() {
-        set_map_start( window.map_bounds_token, map.getBounds() )
-      })
-      // end set bounds
+      var bounds = new mapboxgl.LngLatBounds();
+      data.features.forEach(function(feature) {
+        bounds.extend(feature.geometry.coordinates);
+      });
+      map.fitBounds(bounds, { padding: {top: 20, bottom:20, left: 20, right: 20 } });
+
     });
-
   })
-
 }
 
 window.get_geojson = () => {
