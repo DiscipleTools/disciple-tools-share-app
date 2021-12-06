@@ -58,7 +58,24 @@ window.write_form_screen = () => {
       <button class="button large actions" data-value="followup">Follow-Up</button>
     </div>
   </div>
+  <div id="manual-map" style="display:none;">
+      <br>
+      <div id="map-wrapper">
+          <div id='map'></div>
+      </div>
+    </div>
+  <div id="custom-style">
+    <style>
+      #map-wrapper {
+          height: ${window.innerHeight / 3}px !important;
+      }
+      #map {
+          height: ${window.innerHeight / 3}px !important;
+      }
+      </style>
+    </div>
   `)
+
 
   let action_buttons = jQuery('.actions')
   action_buttons.on('click', function(e){
@@ -67,6 +84,9 @@ window.write_form_screen = () => {
       write_follow_up()
     }
     else {
+      jQuery('.actions').prop('disabled', true )
+      jQuery('.loading-spinner').addClass('active')
+
       if ( typeof window.app_location === 'undefined' ) {
         console.log('not defined')
         const post_location = async () => {
@@ -108,8 +128,7 @@ window.set_location = () => {
     });
   }
   else {
-    console.log('trigger manual location set')
-    window.app_location = { longitude: 0, latitude: 0, accuracy: '' }
+    window.load_manual_map()
   }
 }
 
@@ -124,8 +143,57 @@ window.location_success = (pos) => {
 }
 
 window.location_error = (err) => {
-  window.app_location = { longitude: 0, latitude: 0, accuracy: '' }
+  window.load_manual_map()
   console.log(err);
+}
+
+window.load_manual_map = () => {
+
+  jQuery('#manual-map').show()
+
+  mapboxgl.accessToken = jsObject.map_key;
+  var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/light-v10',
+    center: [-98, 38.88],
+    minZoom: 0,
+    zoom: 0
+  });
+
+  let userGeocode = new mapboxgl.GeolocateControl({
+    positionOptions: {
+      enableHighAccuracy: true
+    },
+    marker: {
+      color: 'orange'
+    },
+    trackUserLocation: false,
+    showUserLocation: false
+  })
+  map.addControl(userGeocode, 'top-left' );
+  userGeocode.on('geolocate', function(e) { // respond to search
+    console.log(e)
+    if ( window.active_marker ) {
+      window.active_marker.remove()
+    }
+
+    let lat = e.coords.latitude
+    let lng = e.coords.longitude
+
+    window.active_lnglat = [lng,lat]
+    window.active_marker = new mapboxgl.Marker()
+      .setLngLat([lng,lat])
+      .addTo(map);
+
+    window.app_location = { longitude: lng, latitude: lat, accuracy: 11 }
+
+  })
+  map.touchZoomRotate.disableRotation();
+  map.dragRotate.disable();
+
+  map.on('load', function() {
+    jQuery(".mapboxgl-ctrl-geolocate").click();
+  })
 }
 
 window.write_follow_up = () => {
@@ -263,7 +331,7 @@ window.load_map = () => {
         <div id='map'></div>
     </div>
   `)
-  let spinner = $('.loading-spinner')
+  let spinner = jQuery('.loading-spinner')
 
   // /* LOAD */
 

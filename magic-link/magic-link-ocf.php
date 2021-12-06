@@ -213,7 +213,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
         if ( 'open' === $data['state'] ) {
             $state = 1;
         }
-        
+
         $args = [
             'user_id' => $user_id,
             'post_id' => $parts['post_id'],
