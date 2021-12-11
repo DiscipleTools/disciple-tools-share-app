@@ -1,7 +1,10 @@
 <?php
 if ( !defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly.
 
-if ( strpos( dt_get_url_path(), 'share_app' ) !== false || strpos( dt_get_url_path(), 'settings' ) !== false ){
+if ( strpos( dt_get_url_path(), 'share_app' ) !== false
+    || strpos( dt_get_url_path(), 'settings' ) !== false
+    || strpos( dt_get_url_path(), 'contacts' ) !== false
+){
     DT_Share_Magic_Link::instance();
 }
 
@@ -35,7 +38,6 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
         /**
          * user_app and module section
          */
-        add_filter( 'dt_settings_apps_list', [ $this, 'dt_settings_apps_list' ], 10, 1 );
         add_action( 'rest_api_init', [ $this, 'add_endpoints' ] );
 
         /**
@@ -86,15 +88,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
         wp_enqueue_style( 'share-app-css', trailingslashit( plugin_dir_url( __FILE__ ) ) . 'share-app.css', [], filemtime( trailingslashit( plugin_dir_path( __FILE__ ) ) .'share-app.css' ) );
     }
 
-    public function dt_settings_apps_list( $apps_list ) {
-        $apps_list[$this->meta_key] = [
-            'key' => $this->meta_key,
-            'url_base' => $this->root. '/'. $this->type,
-            'label' => $this->page_title,
-            'description' => $this->page_description,
-        ];
-        return $apps_list;
-    }
+
 
     public function footer_javascript(){
         ?>

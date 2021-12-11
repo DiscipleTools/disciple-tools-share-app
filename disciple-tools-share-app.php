@@ -83,7 +83,7 @@ class DT_Share {
             require_once( 'charts/charts-loader.php' );  // add custom charts to the metrics area
         }
 
-        require_once( 'tile/fields.php' );
+        require_once( 'tile/custom-tile.php' );
 
         require_once( 'magic-link/magic-link-ocf.php' );
 
