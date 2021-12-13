@@ -74,9 +74,15 @@ class DT_Share_Tile {
                     })
                     jQuery('.section-app-links.<?php echo esc_attr( $this->meta_key ); ?> .send').on('click', function(e){
                         jQuery('#modal-small-title').empty().html(`<h3 class="section-header"><?php echo esc_html( $this->page_title )  ?></h3><span class="small-text">Send a link via email through the system.</span><hr>`)
-                        jQuery('#modal-small-content').empty().html(`<div class="grid-x"><div class="cell"><input type="text" placeholder="Add a note" /><br><button type="button" class="button">Send Email with Link</button></div></div>`)
+                        jQuery('#modal-small-content').empty().html(`<div class="grid-x"><div class="cell"><input type="text" class="note <?php echo esc_attr( $this->meta_key ); ?>" placeholder="Add a note" /><br><button type="button" class="button <?php echo esc_attr( $this->meta_key ); ?>">Send Email with Link</button></div></div>`)
                         jQuery('#modal-small').foundation('open')
-
+                        jQuery('.button.<?php echo esc_attr( $this->meta_key ); ?>').on('click', function(e){
+                            let note = jQuery('.note.<?php echo esc_attr( $this->meta_key ); ?>').val()
+                            makeRequest('POST', window.detailsSettings.post_type + '/email_magic', { root: '<?php echo esc_attr( $this->root ); ?>', type: '<?php echo esc_attr( $this->type ); ?>', magic_key: '<?php echo esc_attr( $this->meta_key ); ?>', note: note, post_ids: [ window.detailsSettings.post_id ] } )
+                                .done( data => {
+                                    jQuery('#modal-small').foundation('close')
+                                })
+                        })
                     })
                     jQuery('.section-app-links.<?php echo esc_attr( $this->meta_key ); ?> .qr').on('click', function(e){
                         jQuery('#modal-small-title').empty().html(`<h3 class="section-header"><?php echo esc_html( $this->page_title )  ?></h3><span class="small-text">QR codes are useful for passing the coaching links to mobile devices.</span><hr>`)
