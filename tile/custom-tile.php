@@ -49,11 +49,11 @@ class DT_Share_Tile {
             ?>
             <div class="section-subheader"><?php echo esc_html( $this->page_title ) ?></div>
             <div class="section-app-links <?php echo esc_attr( $this->meta_key ); ?>">
-                <a type="button" class="empty-select-button select-button small button view"><img class="dt-icon" src="<?php echo get_template_directory_uri() . '/dt-assets/images/visibility.svg?v=2' ?>" /></a>
-                <a type="button" class="empty-select-button select-button small button copy_to_clipboard" data-value="<?php echo esc_html( $link ); ?>"><img class="dt-icon" src="<?php echo get_template_directory_uri() . '/dt-assets/images/duplicate.svg?v=2' ?>" /></a>
-                <a type="button" class="empty-select-button select-button small button send"><img class="dt-icon" src="<?php echo get_template_directory_uri() . '/dt-assets/images/send.svg?v=2' ?>" /></a>
-                <a type="button" class="empty-select-button select-button small button qr"><img class="dt-icon" src="<?php echo get_template_directory_uri() . '/dt-assets/images/qrcode-solid.svg?v=2' ?>" /></a>
-                <a type="button" class="empty-select-button select-button small button reset"><img class="dt-icon" src="<?php echo get_template_directory_uri() . '/dt-assets/images/undo.svg?v=2' ?>" /></a>
+                <a type="button" class="empty-select-button select-button small button view"><img class="dt-icon" src="<?php echo get_template_directory_uri() . '/dt-assets/images/visibility.svg' ?>" /></a>
+                <a type="button" class="empty-select-button select-button small button copy_to_clipboard" data-value="<?php echo esc_html( $link ); ?>"><img class="dt-icon" src="<?php echo get_template_directory_uri() . '/dt-assets/images/duplicate.svg' ?>" /></a>
+                <a type="button" class="empty-select-button select-button small button send"><img class="dt-icon" src="<?php echo get_template_directory_uri() . '/dt-assets/images/send.svg' ?>" /></a>
+                <a type="button" class="empty-select-button select-button small button qr"><img class="dt-icon" src="<?php echo get_template_directory_uri() . '/dt-assets/images/qrcode-solid.svg' ?>" /></a>
+                <a type="button" class="empty-select-button select-button small button reset"><img class="dt-icon" src="<?php echo get_template_directory_uri() . '/dt-assets/images/undo.svg' ?>" /></a>
             </div>
             <script>
                 jQuery(document).ready(function(){
