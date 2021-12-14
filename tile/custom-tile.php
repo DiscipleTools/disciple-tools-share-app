@@ -86,7 +86,7 @@ class DT_Share_Tile {
                     })
                     jQuery('.section-app-links.<?php echo esc_attr( $this->meta_key ); ?> .qr').on('click', function(e){
                         jQuery('#modal-small-title').empty().html(`<h3 class="section-header"><?php echo esc_html( $this->page_title )  ?></h3><span class="small-text">QR codes are useful for passing the coaching links to mobile devices.</span><hr>`)
-                        jQuery('#modal-small-content').empty().html(`<div class="grid-x"><div class="cell center"><img src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${window.app_url['<?php echo esc_attr( $this->meta_key ) ?>']}${window.app_key['<?php echo esc_attr( $this->meta_key ) ?>']}" style="max-width:400px;" /></div></div>`)
+                        jQuery('#modal-small-content').empty().html(`<div class="grid-x"><div class="cell center"><img src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${window.app_url['<?php echo esc_attr( $this->meta_key ) ?>']}${window.app_key['<?php echo esc_attr( $this->meta_key ) ?>']}" style="width: 100%;max-width:400px;" /></div></div>`)
                         jQuery('#modal-small').foundation('open')
                     })
                     jQuery('.section-app-links.<?php echo esc_attr( $this->meta_key ); ?> .reset').on('click', function(e){
