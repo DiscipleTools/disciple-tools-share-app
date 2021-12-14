@@ -11,16 +11,18 @@ if ( strpos( dt_get_url_path(), 'share_app' ) !== false
 class DT_Share_Magic_Link extends DT_Magic_Url_Base
 {
 
-    public $page_title = 'Share App (OCF)';
+    public $page_title = 'Share App';
     public $page_description = 'A micro user app that tracks shares and followup.';
     public $root = "share_app";
     public $type = 'ocf';
+    public $type_name = 'Share App';
     public $post_type = 'contacts';
-    private $meta_key = '';
     public $type_actions = [
         '' => "Share",
         'map' => "Map View",
     ];
+    public $show_bulk_send = true;
+    public $show_app_tile = true;
     public $js_file_name = 'share-app-ocf.js';
 
     private static $_instance = null;
@@ -32,7 +34,6 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
     } // End instance()
 
     public function __construct() {
-        $this->meta_key = $this->root . '_' . $this->type . '_magic_key';
         parent::__construct();
 
         /**
