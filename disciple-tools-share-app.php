@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return object|bool
  */
 function dt_share() {
-    $dt_share_required_dt_theme_version = '1.0';
+    $dt_share_required_dt_theme_version = '1.19';
     $wp_theme = wp_get_theme();
     $version = $wp_theme->version;
 
