@@ -80,7 +80,8 @@ class DT_Share {
         $is_rest = dt_is_rest();
 
         if ( strpos( dt_get_url_path(), 'metrics' ) !== false || ( $is_rest && strpos( dt_get_url_path(), 'share-app-metrics' ) !== false ) ){
-            require_once( 'charts/charts-loader.php' );  // add custom charts to the metrics area
+            require_once( 'charts/charts-loader.php' );
+//            require_once( 'charts/mapbox-maps.php' );
         }
 
         require_once( 'tile/custom-tile.php' );
