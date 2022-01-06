@@ -24,6 +24,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
     public $show_bulk_send = true;
     public $show_app_tile = true;
     public $js_file_name = 'share-app-ocf.js';
+    private $meta_key = '';
 
     private static $_instance = null;
     public static function instance() {
@@ -34,11 +35,13 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
     } // End instance()
 
     public function __construct() {
+        $this->meta_key = $this->root . '_' . $this->type . '_magic_key';
         parent::__construct();
 
         /**
          * user_app and module section
          */
+        add_filter( 'dt_settings_apps_list', [ $this, 'dt_settings_apps_list' ], 10, 1 );
         add_action( 'rest_api_init', [ $this, 'add_endpoints' ] );
 
         /**
@@ -61,6 +64,18 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
         add_action( 'dt_blank_body', [ $this, 'body' ] );
         add_filter( 'dt_magic_url_base_allowed_css', [ $this, 'dt_magic_url_base_allowed_css' ], 10, 1 );
         add_filter( 'dt_magic_url_base_allowed_js', [ $this, 'dt_magic_url_base_allowed_js' ], 10, 1 );
+    }
+
+    public function dt_settings_apps_list( $apps_list ) {
+        $apps_list[ $this->meta_key ] = [
+            'key'              => $this->meta_key,
+            'url_base'         => $this->root . '/' . $this->type,
+            'label'            => $this->page_title,
+            'description'      => $this->page_description,
+            'settings_display' => true,
+        ];
+
+        return $apps_list;
     }
 
     public function dt_magic_url_base_allowed_js( $allowed_js ) {
