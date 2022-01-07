@@ -3,11 +3,17 @@ if ( !defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly.
 
 add_action( 'dt_insert_report', function($args){
 
+    if ( ! function_exists( 'dt_network_site_id' ) ) {
+        return;
+    }
+    if ( ! class_exists( 'DT_Network_Dashboard_Metrics_Base') ) {
+        return;
+    }
     if ( ! isset( $args['type'], $args['subtype'], $args['post_id'] ) ) {
         return;
     }
 
-    if ( 'prayer_list_app' === $args['type'] && 'daily' === $args['subtype'] ) {
+    if ( 'share_app' === $args['type'] && 'ocf' === $args['subtype'] ) {
         $data = [
             'site_id' => dt_network_site_id(),
             'site_record_id' => null,
@@ -28,23 +34,23 @@ add_action( 'dt_insert_report', function($args){
 
 }, 10, 1 );
 
-
 /**
  * READ LOG
  */
-add_filter( 'dt_network_dashboard_build_message', function ( $activity_log ){
+add_filter( 'dt_network_dashboard_build_message', 'dt_share_app_list_build_message', 10, 1 );
+function dt_share_app_list_build_message( $activity_log ){
 
-    foreach ( $activity_log as $index => $log ){
+    if ( ! function_exists( 'dt_create_initials' ) ) {
+        foreach ( $activity_log as $index => $log ){
 
-        /* prayer_list_app */
-        if ( 'share_app' === $log['action'] ) {
-            $initials = Zume_Public_Heatmap_100hours_Utilities::create_initials( $log['lng'], $log['lat'], $log['payload'] );
-            $initials_2 = Zume_Public_Heatmap_100hours_Utilities::create_initials( $log['lng'], $log['lat'], $log['payload'] );
-            $activity_log[$index]['message'] = $initials . ' is praying for ' . $initials_2 . "( location)";
+            /* prayer_list_app */
+            if ( 'share_app' === $log['action'] ) {
+                $initials = dt_create_initials( $log['lng'], $log['lat'], $log['payload'] );
+                $activity_log[$index]['message'] = $initials . ' is sharing about Jesus.' . $log['label'] ?? '';
+            }
+
         }
-
     }
 
     return $activity_log;
-}, 10, 1 );
-
+}

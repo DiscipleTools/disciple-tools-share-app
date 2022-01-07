@@ -81,12 +81,13 @@ class DT_Share {
 
         if ( strpos( dt_get_url_path(), 'metrics' ) !== false || ( $is_rest && strpos( dt_get_url_path(), 'share-app-metrics' ) !== false ) ){
             require_once( 'charts/charts-loader.php' );
-//            require_once( 'charts/mapbox-maps.php' );
         }
 
         require_once( 'tile/custom-tile.php' );
 
         require_once( 'magic-link/magic-link-ocf.php' );
+
+        require_once( 'network-dashboard/hook.php' );
 
         $this->i18n();
 
