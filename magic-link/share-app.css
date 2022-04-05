@@ -17,3 +17,7 @@ body {
     right: 20px;
     z-index: 100;
 }
+#content {
+    width:100% !important;
+    max-width:100% !important;
+}
