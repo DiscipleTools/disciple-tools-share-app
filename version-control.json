@@ -22,6 +22,7 @@
     "low": "https://raw.githubusercontent.com/DiscipleTools/disciple-tools-share-app/master/documentation/banner.png",
     "high": "https://raw.githubusercontent.com/DiscipleTools/disciple-tools-share-app/master/documentation/banner.png"
   },
+  "icon": "https://raw.githubusercontent.com/DiscipleTools/disciple-tools-share-app/master/documentation/icon.png",
   "sections": {
     "description": "Add a share app for prayer walking and face-to-face street evangelism.",
     "installation": "(Required) You must have Disciple.Tools Theme installed before using this plugin. Once Disciple.Tools is installed, you can use the normal Plugin system to install the plugin.",
