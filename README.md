@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.com/DiscipleTools/disciple-tools-share-app.svg?branch=master)](https://travis-ci.com/DiscipleTools/disciple-tools-share-app)
-
 # Disciple Tools - Share App
 
 ## Purpose
@@ -35,3 +33,6 @@ in the [Discussions](https://github.com/DiscipleTools/disciple-tools-share-app/d
 code contributions are welcome using the [Pull Request](https://github.com/DiscipleTools/disciple-tools-share-app/pulls)
 system for git. For a more details on contribution see the
 [contribution guidelines](https://github.com/DiscipleTools/disciple-tools-share-app/blob/master/CONTRIBUTING.md).
+
+
+[![Build Status](https://travis-ci.com/DiscipleTools/disciple-tools-share-app.svg?branch=master)](https://travis-ci.com/DiscipleTools/disciple-tools-share-app)
