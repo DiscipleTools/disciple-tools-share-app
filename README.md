@@ -1,5 +1,7 @@
 # Disciple Tools - Share App
 
+![Plugin Banner](https://github.com/DiscipleTools/disciple-tools-share-app/raw/master/documentation/banner.png)
+
 ## Purpose
 
 This app generates a magic link for each contact and user that can be used to track closed and open gospel shares,
@@ -12,9 +14,10 @@ face to face evangelism.
 
 - Simple logging of open and closed gospel sharing attempts.
 - Simple personal map record of your gospel shares.
-- Metrics map of all gospel shares in the system.
-
-#### Will Not Do
+- Personal metrics map of all gospel shares in the system.
+- Magic link can be installed on home screen of mobile phones for quick access.
+- Metrics map that shows all gospel shares for all users and contacts.
+- Bulk link distribution enabled through the lists page on contacts.
 
 ## Requirements
 
@@ -34,5 +37,16 @@ code contributions are welcome using the [Pull Request](https://github.com/Disci
 system for git. For a more details on contribution see the
 [contribution guidelines](https://github.com/DiscipleTools/disciple-tools-share-app/blob/master/CONTRIBUTING.md).
 
+## Screenshots
+
+### Home screen on mobile (very simple design and easy to pull up on site)
+![Screenshot 1](https://github.com/DiscipleTools/disciple-tools-share-app/raw/master/documentation/home.jpg)
+### Personal Map screen
+![Screenshot 2](https://github.com/DiscipleTools/disciple-tools-share-app/raw/master/documentation/map.jpg)
+### Contact tile
+![Screenshot 3](https://github.com/DiscipleTools/disciple-tools-share-app/raw/master/documentation/tile.png)
+### User tile
+![Screenshot 4](https://github.com/DiscipleTools/disciple-tools-share-app/raw/master/documentation/user-tile.png)
 
 [![Build Status](https://travis-ci.com/DiscipleTools/disciple-tools-share-app.svg?branch=master)](https://travis-ci.com/DiscipleTools/disciple-tools-share-app)
+
