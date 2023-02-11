@@ -55,6 +55,12 @@ window.write_form_screen = () => {
       <button class="button large actions" data-value="open">Open</button>
     </div>
     <div class="cell center">
+      <button class="button large actions" data-value="closed">Closed</button>
+    </div>
+    <div class="cell center">
+      <button class="button large actions" data-value="open">Open</button>
+    </div>
+    <div class="cell center">
       <button class="button large actions" data-value="followup">Follow-Up</button>
     </div>
   </div>
