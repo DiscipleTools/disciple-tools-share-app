@@ -44,24 +44,27 @@ window.load_app = () => {
 
 window.write_form_screen = () => {
   let content = jQuery('#content')
-  let height = window.innerHeight / 4
+  let height = window.innerHeight / 6
 
   content.empty().html(`
-  <div class="grid-x grid-padding-y" style="padding-top: ${height}px;">
+  <div class="grid-x grid-padding-y" id="button-list" >
     <div class="cell center">
-      <button class="button large actions" data-value="closed">Closed</button>
+      <button class="button large expanded actions" data-value="closed">Their Story</button>
     </div>
     <div class="cell center">
-      <button class="button large actions" data-value="open">Open</button>
+      <button class="button large expanded actions" data-value="open">My Story</button>
     </div>
     <div class="cell center">
-      <button class="button large actions" data-value="closed">Closed</button>
+      <button class="button large alert expanded actions" data-value="closed">Closed to God's Story</button>
     </div>
     <div class="cell center">
-      <button class="button large actions" data-value="open">Open</button>
+      <button class="button large warning expanded actions" data-value="open">Open to Learning</button>
     </div>
     <div class="cell center">
-      <button class="button large actions" data-value="followup">Follow-Up</button>
+      <button class="button large success expanded actions" data-value="accepted">Accepted Christ</button>
+    </div>
+    <div class="cell center">
+      <button class="button large actions" data-value="followup">Add Contact for Followup</button>
     </div>
   </div>
   <div id="manual-map" style="display:none;">
@@ -77,6 +80,17 @@ window.write_form_screen = () => {
       }
       #map {
           height: ${window.innerHeight / 3}px !important;
+      }
+      #button-list {
+        /*padding-top: ${height}px;*/
+        max-width:800px;
+        margin: 0 auto;
+      }
+      #button-list button {
+        padding: 2rem;
+        color: #fff;
+        font-weight: bold;
+        text-transform: uppercase;
       }
       </style>
     </div>
@@ -330,6 +344,8 @@ window.write_follow_up = () => {
   })
 
 }
+
+
 
 window.load_map = () => {
   let content = jQuery('#content')

@@ -224,26 +224,18 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
             $user_id = 0;
         }
 
-        $state = 0;
-        if ( 'open' === $data['state'] ) {
-            $state = 1;
-        }
-        else if ( 'followup' === $data['state'] ){
-            $state = 2;
-        }
-
         $args = [
             'user_id' => $user_id,
             'post_id' => $parts['post_id'],
             'post_type' => 'contacts',
             'type' => $parts['root'],
-            'subtype' => $parts['type'],
+            'subtype' => $data['state'],
             'lng' => $longitude,
             'lat' => $latitude,
             'level' => '',
             'label' => $full_name,
             'grid_id' => $grid['grid_id'] ?? '',
-            'value' => $state,
+            'value' => 1,
             'time_end' => time(),
         ];
 
