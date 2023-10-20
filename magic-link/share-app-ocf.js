@@ -145,55 +145,62 @@ window.location_success = (pos) => {
 window.location_error = (err) => {
   window.load_manual_map()
   console.log(err);
+  alert(`ERROR(${err.code}): ${err.message} - HTTPS Protocol Required.`);
 }
 
 window.load_manual_map = () => {
 
   jQuery('#manual-map').show()
 
-  mapboxgl.accessToken = jsObject.map_key;
-  var map = new mapboxgl.Map({
-    container: 'map',
-    style: 'mapbox://styles/mapbox/light-v10',
-    center: [-98, 38.88],
-    minZoom: 0,
-    zoom: 0
-  });
+  try {
+    mapboxgl.accessToken = jsObject.map_key;
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/light-v10',
+      center: [-98, 38.88],
+      minZoom: 0,
+      zoom: 0
+    });
 
-  let userGeocode = new mapboxgl.GeolocateControl({
-    positionOptions: {
-      enableHighAccuracy: true
-    },
-    marker: {
-      color: 'orange'
-    },
-    trackUserLocation: false,
-    showUserLocation: false
-  })
-  map.addControl(userGeocode, 'top-left' );
-  userGeocode.on('geolocate', function(e) { // respond to search
-    console.log(e)
-    if ( window.active_marker ) {
-      window.active_marker.remove()
-    }
+    let userGeocode = new mapboxgl.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true
+      },
+      marker: {
+        color: 'orange'
+      },
+      trackUserLocation: false,
+      showUserLocation: false
+    })
+    map.addControl(userGeocode, 'top-left');
+    userGeocode.on('geolocate', function (e) { // respond to search
+      console.log(e)
+      if (window.active_marker) {
+        window.active_marker.remove()
+      }
 
-    let lat = e.coords.latitude
-    let lng = e.coords.longitude
+      let lat = e.coords.latitude
+      let lng = e.coords.longitude
 
-    window.active_lnglat = [lng,lat]
-    window.active_marker = new mapboxgl.Marker()
-      .setLngLat([lng,lat])
+      window.active_lnglat = [lng, lat]
+      window.active_marker = new mapboxgl.Marker()
+      .setLngLat([lng, lat])
       .addTo(map);
 
-    window.app_location = { longitude: lng, latitude: lat, accuracy: 11 }
+      window.app_location = {longitude: lng, latitude: lat, accuracy: 11}
 
-  })
-  map.touchZoomRotate.disableRotation();
-  map.dragRotate.disable();
+    })
+    map.touchZoomRotate.disableRotation();
+    map.dragRotate.disable();
 
-  map.on('load', function() {
-    jQuery(".mapboxgl-ctrl-geolocate").click();
-  })
+    map.on('load', function () {
+      jQuery(".mapboxgl-ctrl-geolocate").click();
+    })
+
+  } catch (e) {
+    console.log(e);
+    alert(`To use this app, a Mapbox or Google Geocoding API key is needed.`);
+  }
 }
 
 window.write_follow_up = () => {
