@@ -1,3 +1,4 @@
+![Build Status](https://github.com/DiscipleTools/disciple-tools-share-app/actions/workflows/ci.yml/badge.svg?branch=master)
 # Disciple Tools - Share App
 
 ![Plugin Banner](https://github.com/DiscipleTools/disciple-tools-share-app/raw/master/documentation/banner.png)

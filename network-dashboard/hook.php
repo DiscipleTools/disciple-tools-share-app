@@ -1,7 +1,7 @@
 <?php
 if ( !defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly.
 
-add_action( 'dt_insert_report', function( $args){
+add_action( 'dt_insert_report', function( $args ){
 
     if ( ! function_exists( 'dt_network_site_id' ) ) {
         return;

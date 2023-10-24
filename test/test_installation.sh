@@ -12,8 +12,8 @@
 set -x
 set -e
 
-if [ "$TRAVIS_COMMIT" = "" ] ; then
-    echo "TRAVIS_COMMIT env variable not set" >&2
+if [ "$GITHUB_REPOSITORY" = "" ] ; then
+    echo "GITHUB_REPOSITORY env variable not set" >&2
     exit 1
 fi
 
@@ -25,10 +25,10 @@ curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.pha
 php wp-cli.phar --info
 chmod +x wp-cli.phar
 
-# Set up user Wordpress installation:
+# Set up basic Wordpress installation:
 ./wp-cli.phar core download
-./wp-cli.phar config create --force --dbname=testdb --dbuser=travis
+./wp-cli.phar config create --force --dbname=testdb --dbuser=user --dbhost=127.0.0.0 --dbpass=password
 ./wp-cli.phar core install --url=localhost --title=test --admin_user=admin --admin_email=example@example.com
 
 # Install plugin
-./wp-cli.phar plugin install --activate "https://github.com/$TRAVIS_REPO_SLUG/archive/$TRAVIS_COMMIT.zip"
+./wp-cli.phar plugin install --activate "https://github.com/$GITHUB_REPOSITORY/archive/$GITHUB_SHA.zip"

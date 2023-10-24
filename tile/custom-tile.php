@@ -5,7 +5,7 @@ class DT_Share_Tile {
 
     public $page_title = 'Share App';
     public $page_description = 'A micro user app that tracks shares and followup.';
-    public $root = "share_app";
+    public $root = 'share_app';
     public $type = 'ocf';
     public $post_type = 'contacts';
     private $meta_key = 'share_app_ocf_magic_key';
@@ -33,13 +33,13 @@ class DT_Share_Tile {
 //        return $apps_list;
 //    }
 
-    public function dt_custom_fields_settings( array $fields, string $post_type = "" ) {
-        if ( $post_type === "contacts" ) {
+    public function dt_custom_fields_settings( array $fields, string $post_type = '' ) {
+        if ( $post_type === 'contacts' ) {
             $fields[$this->meta_key] = [
                 'name' => $this->meta_key,
                 'type' => 'hash',
                 'default' => dt_create_unique_key(),
-                "hidden" => true,
+                'hidden' => true,
             ];
         }
         return $fields;

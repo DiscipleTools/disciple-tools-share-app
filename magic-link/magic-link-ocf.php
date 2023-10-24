@@ -13,13 +13,13 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
 
     public $page_title = 'Share App';
     public $page_description = 'A micro user app that tracks shares and followup.';
-    public $root = "share_app";
+    public $root = 'share_app';
     public $type = 'ocf';
     public $type_name = 'Share App';
     public $post_type = 'contacts';
     public $type_actions = [
-        '' => "Share",
-        'map' => "Map View",
+        '' => 'Share',
+        'map' => 'Map View',
     ];
     public $show_bulk_send = true;
     public $show_app_tile = true;
@@ -173,7 +173,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
         register_rest_route(
             $namespace, '/'.$this->type, [
                 [
-                    'methods'  => "POST",
+                    'methods'  => 'POST',
                     'callback' => [ $this, 'endpoint' ],
                 ],
             ]
@@ -183,7 +183,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
         $params = $request->get_params();
 
         if ( ! isset( $params['parts'], $params['action'] ) ) {
-            return new WP_Error( __METHOD__, "Missing parameters", [ 'status' => 400 ] );
+            return new WP_Error( __METHOD__, 'Missing parameters', [ 'status' => 400 ] );
         }
 
         $params = dt_recursive_sanitize_array( $params );
@@ -197,14 +197,14 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
             case 'geojson':
                 return $this->endpoint_geojson( $params['parts'] );
             default:
-                return new WP_Error( __METHOD__, "Missing valid action", [ 'status' => 400 ] );
+                return new WP_Error( __METHOD__, 'Missing valid action', [ 'status' => 400 ] );
         }
     }
 
     public function endpoint_log( $parts, $data ) {
 
         if ( ! isset( $data['state'], $data['location'] ) ) {
-            return new WP_Error( __METHOD__, "Missing required parameters", [ 'status' => 400, 'data' => $data ] );
+            return new WP_Error( __METHOD__, 'Missing required parameters', [ 'status' => 400, 'data' => $data ] );
         }
 
         // get user contact record id
@@ -253,7 +253,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
     public function endpoint_followup( $parts, $data ) {
 
         if ( ! isset( $data['email'], $data['phone'], $data['name'], $data['location'] ) ) {
-            return new WP_Error( __METHOD__, "Missing required parameters", [ 'status' => 400, 'data' => $data ] );
+            return new WP_Error( __METHOD__, 'Missing required parameters', [ 'status' => 400, 'data' => $data ] );
         }
 
         $user_id = get_post_meta( $parts['post_id'], 'corresponds_to_user', true );
@@ -265,20 +265,20 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
 
         $fields = [
             'title' => sanitize_text_field( wp_unslash( $data['name'] ) ),
-            "assigned_to" => sanitize_text_field( wp_unslash( $user_id ) ),
-            "subassigned" => [
-                "values" => [
-                    [ "value" => sanitize_text_field( wp_unslash( $parts['post_id'] ) ) ],
+            'assigned_to' => sanitize_text_field( wp_unslash( $user_id ) ),
+            'subassigned' => [
+                'values' => [
+                    [ 'value' => sanitize_text_field( wp_unslash( $parts['post_id'] ) ) ],
                 ],
             ],
-            "type" => 'access',
-            "contact_phone" => [
-                [ "value" => sanitize_text_field( wp_unslash( $data['phone'] ) ) ]
+            'type' => 'access',
+            'contact_phone' => [
+                [ 'value' => sanitize_text_field( wp_unslash( $data['phone'] ) ) ]
             ],
-            "contact_email" => [
-                [ "value" => sanitize_text_field( wp_unslash( $data['email'] ) ) ]
+            'contact_email' => [
+                [ 'value' => sanitize_text_field( wp_unslash( $data['email'] ) ) ]
             ],
-            "notes" => $notes
+            'notes' => $notes
         ];
 
         $post_id = DT_Posts::create_post( 'contacts', $fields, false, false );
@@ -311,7 +311,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
         }
 
         $features = [];
-        foreach ($results as $result) {
+        foreach ( $results as $result ) {
             $features[] = array(
                 'type' => 'Feature',
                 'properties' => array(

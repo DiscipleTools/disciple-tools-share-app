@@ -37,8 +37,8 @@ function dt_share() {
     /*
      * Check if the Disciple.Tools theme is loaded and is the latest required version
      */
-    $is_theme_dt = strpos( $wp_theme->get_template(), "disciple-tools-theme" ) !== false || $wp_theme->name === "Disciple Tools";
-    if ( $is_theme_dt && version_compare( $version, $dt_share_required_dt_theme_version, "<" ) ) {
+    $is_theme_dt = strpos( $wp_theme->get_template(), 'disciple-tools-theme' ) !== false || $wp_theme->name === 'Disciple Tools';
+    if ( $is_theme_dt && version_compare( $version, $dt_share_required_dt_theme_version, '<' ) ) {
         add_action( 'admin_notices', 'dt_share_hook_admin_notice' );
         add_action( 'wp_ajax_dismissed_notice_handler', 'dt_hook_ajax_notice_handler' );
         return false;
@@ -191,7 +191,7 @@ class DT_Share {
      * @access public
      */
     public function __call( $method = '', $args = array() ) {
-        _doing_it_wrong( "dt_share::" . esc_html( $method ), 'Method does not exist.', '0.1' );
+        _doing_it_wrong( 'dt_share::' . esc_html( $method ), 'Method does not exist.', '0.1' );
         unset( $method, $args );
         return null;
     }
@@ -209,7 +209,7 @@ if ( ! function_exists( 'dt_share_hook_admin_notice' ) ) {
         $wp_theme = wp_get_theme();
         $current_version = $wp_theme->version;
         $message = "'Disciple Tools - Share App' plugin requires 'Disciple Tools' theme to work. Please activate 'Disciple Tools' theme or make sure it is latest version.";
-        if ( $wp_theme->get_template() === "disciple-tools-theme" ){
+        if ( $wp_theme->get_template() === 'disciple-tools-theme' ){
             $message .= ' ' . sprintf( esc_html( 'Current Disciple Tools version: %1$s, required version: %2$s' ), esc_html( $current_version ), esc_html( $dt_share_required_dt_theme_version ) );
         }
         // Check if it's been dismissed...
@@ -238,11 +238,11 @@ if ( ! function_exists( 'dt_share_hook_admin_notice' ) ) {
 /**
  * AJAX handler to store the state of dismissible notices.
  */
-if ( ! function_exists( "dt_hook_ajax_notice_handler" )){
+if ( ! function_exists( 'dt_hook_ajax_notice_handler' ) ){
     function dt_hook_ajax_notice_handler(){
         check_ajax_referer( 'wp_rest_dismiss', 'security' );
-        if ( isset( $_POST["type"] ) ){
-            $type = sanitize_text_field( wp_unslash( $_POST["type"] ) );
+        if ( isset( $_POST['type'] ) ){
+            $type = sanitize_text_field( wp_unslash( $_POST['type'] ) );
             update_option( 'dismissed-' . $type, true );
         }
     }
@@ -253,7 +253,7 @@ add_action( 'plugins_loaded', function (){
     if ( is_admin() && ! is_multisite() || is_network_admin() || wp_doing_cron() ){
         // Check for plugin updates
         if ( ! class_exists( 'Puc_v4_Factory' ) ) {
-            if ( file_exists( get_template_directory() . '/dt-core/libraries/plugin-update-checker/plugin-update-checker.php' )){
+            if ( file_exists( get_template_directory() . '/dt-core/libraries/plugin-update-checker/plugin-update-checker.php' ) ){
                 require( get_template_directory() . '/dt-core/libraries/plugin-update-checker/plugin-update-checker.php' );
             }
         }

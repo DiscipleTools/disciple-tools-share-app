@@ -4,7 +4,7 @@ if ( !defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly.
 class DT_Share_Chart_Template extends DT_Metrics_Chart_Base
 {
     public $base_slug = 'share-app-metrics'; // lowercase
-    public $base_title = "Share App";
+    public $base_title = 'Share App';
 
     public $title = 'Map';
     public $slug = 'map'; // lowercase
@@ -58,8 +58,8 @@ class DT_Share_Chart_Template extends DT_Metrics_Chart_Base
                     // add preload stats data into arrays here
                 ],
                 'translations' => [
-                    "title" => $this->title,
-                    "Sample API Call" => __( "Sample API Call" )
+                    'title' => $this->title,
+                    'Sample API Call' => __( 'Sample API Call' )
                 ]
             ]
         );
@@ -110,7 +110,7 @@ class DT_Share_Chart_Template extends DT_Metrics_Chart_Base
             'open' => [],
             'followup' => []
         ];
-        foreach ($results as $result) {
+        foreach ( $results as $result ) {
             $feature = array(
                 'type' => 'Feature',
                 'properties' => array(
