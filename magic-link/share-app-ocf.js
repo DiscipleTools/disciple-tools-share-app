@@ -48,6 +48,7 @@ window.write_form_screen = () => {
 
   content.empty().html(`
   <div class="grid-x grid-padding-y" style="padding-top: ${height}px;">
+    <div class="share-error-msg center" style="display: none;"></div>
     <div class="cell center">
       <button class="button large actions" data-value="closed">Closed</button>
     </div>
@@ -76,6 +77,11 @@ window.write_form_screen = () => {
     </div>
   `)
 
+  jQuery(document).on('click', '.enable-geolocation-but', function () {
+    jQuery('.share-error-msg').fadeOut('fast', function () {
+      window.set_location();
+    });
+  });
 
   let action_buttons = jQuery('.actions')
   action_buttons.on('click', function(e){
@@ -89,6 +95,7 @@ window.write_form_screen = () => {
 
       if ( typeof window.app_location === 'undefined' ) {
         console.log('not defined')
+        jQuery('.loading-spinner').removeClass('active');
         const post_location = async () => {
           const result = await window.set_location()
           window.log( v ).done(function(data){
@@ -145,55 +152,69 @@ window.location_success = (pos) => {
 window.location_error = (err) => {
   window.load_manual_map()
   console.log(err);
+  let error_msg = jQuery('.share-error-msg');
+  jQuery(error_msg).fadeOut('fast', function () {
+    jQuery(error_msg).html(`
+    <span>Location services required for this app.</span><br><br>
+    <button class="button enable-geolocation-but">Enable Geolocation</button>
+    `);
+    jQuery(error_msg).fadeIn('fast');
+  });
 }
 
 window.load_manual_map = () => {
 
   jQuery('#manual-map').show()
 
-  mapboxgl.accessToken = jsObject.map_key;
-  var map = new mapboxgl.Map({
-    container: 'map',
-    style: 'mapbox://styles/mapbox/light-v10',
-    center: [-98, 38.88],
-    minZoom: 0,
-    zoom: 0
-  });
+  try {
+    mapboxgl.accessToken = jsObject.map_key;
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/light-v10',
+      center: [-98, 38.88],
+      minZoom: 0,
+      zoom: 0
+    });
 
-  let userGeocode = new mapboxgl.GeolocateControl({
-    positionOptions: {
-      enableHighAccuracy: true
-    },
-    marker: {
-      color: 'orange'
-    },
-    trackUserLocation: false,
-    showUserLocation: false
-  })
-  map.addControl(userGeocode, 'top-left' );
-  userGeocode.on('geolocate', function(e) { // respond to search
-    console.log(e)
-    if ( window.active_marker ) {
-      window.active_marker.remove()
-    }
+    let userGeocode = new mapboxgl.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true
+      },
+      marker: {
+        color: 'orange'
+      },
+      trackUserLocation: false,
+      showUserLocation: false
+    })
+    map.addControl(userGeocode, 'top-left');
+    userGeocode.on('geolocate', function (e) { // respond to search
+      console.log(e)
+      if (window.active_marker) {
+        window.active_marker.remove()
+      }
 
-    let lat = e.coords.latitude
-    let lng = e.coords.longitude
+      let lat = e.coords.latitude
+      let lng = e.coords.longitude
 
-    window.active_lnglat = [lng,lat]
-    window.active_marker = new mapboxgl.Marker()
-      .setLngLat([lng,lat])
+      window.active_lnglat = [lng, lat]
+      window.active_marker = new mapboxgl.Marker()
+      .setLngLat([lng, lat])
       .addTo(map);
 
-    window.app_location = { longitude: lng, latitude: lat, accuracy: 11 }
+      window.app_location = {longitude: lng, latitude: lat, accuracy: 11}
 
-  })
-  map.touchZoomRotate.disableRotation();
-  map.dragRotate.disable();
+    })
+    map.touchZoomRotate.disableRotation();
+    map.dragRotate.disable();
 
-  map.on('load', function() {
-    jQuery(".mapboxgl-ctrl-geolocate").click();
-  })
+    map.on('load', function () {
+      jQuery(".mapboxgl-ctrl-geolocate").click();
+    })
+
+  } catch (e) {
+    console.log(e);
+    alert(`To use this app, a Mapbox or Google Geocoding API key is needed.`);
+  }
 }
 
 window.write_follow_up = () => {
