@@ -48,6 +48,7 @@ window.write_form_screen = () => {
 
   content.empty().html(`
   <div class="grid-x grid-padding-y" style="padding-top: ${height}px;">
+    <div class="share-error-msg center" style="display: none;"></div>
     <div class="cell center">
       <button class="button large actions" data-value="closed">Closed</button>
     </div>
@@ -76,6 +77,11 @@ window.write_form_screen = () => {
     </div>
   `)
 
+  jQuery(document).on('click', '.enable-geolocation-but', function () {
+    jQuery('.share-error-msg').fadeOut('fast', function () {
+      window.set_location();
+    });
+  });
 
   let action_buttons = jQuery('.actions')
   action_buttons.on('click', function(e){
@@ -89,6 +95,7 @@ window.write_form_screen = () => {
 
       if ( typeof window.app_location === 'undefined' ) {
         console.log('not defined')
+        jQuery('.loading-spinner').removeClass('active');
         const post_location = async () => {
           const result = await window.set_location()
           window.log( v ).done(function(data){
@@ -145,7 +152,14 @@ window.location_success = (pos) => {
 window.location_error = (err) => {
   window.load_manual_map()
   console.log(err);
-  alert(`ERROR(${err.code}): ${err.message} - HTTPS Protocol Required.`);
+  let error_msg = jQuery('.share-error-msg');
+  jQuery(error_msg).fadeOut('fast', function () {
+    jQuery(error_msg).html(`
+    <span>Location services required for this app.</span><br><br>
+    <button class="button enable-geolocation-but">Enable Geolocation</button>
+    `);
+    jQuery(error_msg).fadeIn('fast');
+  });
 }
 
 window.load_manual_map = () => {

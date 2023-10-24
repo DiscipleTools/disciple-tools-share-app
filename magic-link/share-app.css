@@ -21,3 +21,15 @@ body {
     width:100% !important;
     max-width:100% !important;
 }
+.share-error-msg {
+    justify-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    color: #FFFFFF;
+    font-weight: bold;
+    background: rgba(215, 1, 1, 0.31);
+    border: 2px solid #d70101;
+    padding: 20px;
+    margin: 20px;
+    width: 100%;
+}

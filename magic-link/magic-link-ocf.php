@@ -289,7 +289,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
         ] );
 
         return [
-          'post_id' => $post_id,
+          'post_id' => $post_id['ID'] ?? '',
           'report' => $report_id
         ];
     }
