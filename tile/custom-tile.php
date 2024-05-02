@@ -36,7 +36,7 @@ class DT_Share_Tile {
     public function dt_custom_fields_settings( array $fields, string $post_type = '' ) {
         if ( $post_type === 'contacts' ) {
             $fields[$this->meta_key] = [
-                'name' => $this->meta_key,
+                'name' => $this->page_title,
                 'type' => 'hash',
                 'default' => dt_create_unique_key(),
                 'hidden' => true,
