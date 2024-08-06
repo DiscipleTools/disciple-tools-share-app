@@ -1,12 +1,7 @@
 <?php
 if ( !defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly.
 
-if ( strpos( dt_get_url_path(), 'share_app' ) !== false
-    || strpos( dt_get_url_path(), 'settings' ) !== false
-    || strpos( dt_get_url_path(), 'contacts' ) !== false
-){
-    DT_Share_Magic_Link::instance();
-}
+DT_Share_Magic_Link::instance();
 
 class DT_Share_Magic_Link extends DT_Magic_Url_Base
 {
