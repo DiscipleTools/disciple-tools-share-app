@@ -20,6 +20,7 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
     public $show_app_tile = true;
     public $js_file_name = 'share-app-ocf.js';
     private $meta_key = '';
+    public $meta = [];
 
     private static $_instance = null;
     public static function instance() {
@@ -31,6 +32,10 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
 
     public function __construct() {
         $this->meta_key = $this->root . '_' . $this->type . '_magic_key';
+        $this->meta = [
+            'icon'           => 'mdi mdi-map-marker-account',
+            'show_in_home_apps' => true,
+        ];
         parent::__construct();
 
         /**
