@@ -5,7 +5,7 @@
  * Description: Add a share app to Disciple.Tools for street evangelism. Tracks share locations.
  * Text Domain: disciple-tools-share-app
  * Domain Path: /languages
- * Version:  1.2
+ * Version:  1.2.1
  * Author URI: https://github.com/DiscipleTools
  * GitHub Plugin URI: https://github.com/DiscipleTools/disciple-tools-share-app
  * Requires at least: 4.7.0
