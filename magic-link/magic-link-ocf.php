@@ -1,8 +1,6 @@
 <?php
 if ( !defined( 'ABSPATH' ) ) { exit; } // Exit if accessed directly.
 
-DT_Share_Magic_Link::instance();
-
 class DT_Share_Magic_Link extends DT_Magic_Url_Base
 {
 
@@ -344,3 +342,4 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
         );
     }
 }
+DT_Share_Magic_Link::instance();
