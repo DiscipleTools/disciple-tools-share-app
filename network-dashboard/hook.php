@@ -31,7 +31,6 @@ add_action( 'dt_insert_report', function( $args ){
 
         DT_Network_Activity_Log::insert( $data );
     }
-
 }, 10, 1 );
 
 /**

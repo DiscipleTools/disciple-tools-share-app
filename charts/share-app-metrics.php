@@ -149,5 +149,4 @@ class DT_Share_Chart_Template extends DT_Metrics_Chart_Base
             ]
         ];
     }
-
 }

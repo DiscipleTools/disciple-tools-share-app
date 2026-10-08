@@ -19,7 +19,6 @@ class DT_Share_Charts
         /**
          * @todo add other charts like the pattern above here
          */
-
     } // End __construct
 }
 DT_Share_Charts::instance();
