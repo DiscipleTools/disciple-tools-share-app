@@ -173,6 +173,11 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
                 [
                     'methods'  => 'POST',
                     'callback' => [ $this, 'endpoint' ],
+                    // Public magic-link route by design (no login): the REAL authorization control is the
+                    // key resolution in endpoint() below, which binds the request to the post the caller's
+                    // magic public_key resolves to. Registering the permission_callback explicitly avoids
+                    // relying on WP's permissive default for a routed-without-callback endpoint.
+                    'permission_callback' => '__return_true',
                 ],
             ]
         );
@@ -185,6 +190,22 @@ class DT_Share_Magic_Link extends DT_Magic_Url_Base
         }
 
         $params = dt_recursive_sanitize_array( $params );
+
+        // SECURITY (CWE-306): this route previously had no permission_callback AND this handler never
+        // verified the magic key — it trusted the caller-supplied parts.post_id, so an anonymous caller
+        // could log/followup/geojson against ANY contact by substituting its id (unauth read + write of
+        // location data on arbitrary contacts). Resolve the caller's magic public_key to the owning post
+        // and FAIL CLOSED; the RESOLVED post_id is authoritative, so the attacker-supplied parts.post_id
+        // can no longer target a different record. A legitimate user arriving via their own valid magic
+        // link resolves to their own post and is unaffected. Mirrors the safe DT magic-handler shape.
+        $public_key = isset( $params['parts']['public_key'] ) ? (string) $params['parts']['public_key'] : '';
+        $magic = new DT_Magic_URL( $this->root );
+        $resolved_post_id = $public_key ? $magic->get_post_id( $this->meta_key, $public_key ) : null;
+        if ( empty( $resolved_post_id ) ) {
+            return new WP_Error( __METHOD__, 'Invalid or missing key', [ 'status' => 401 ] );
+        }
+        $params['parts']['post_id'] = (int) $resolved_post_id;
+
         $action = sanitize_text_field( wp_unslash( $params['action'] ) );
 
         switch ( $action ) {
